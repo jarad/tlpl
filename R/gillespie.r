@@ -90,7 +90,7 @@ update.species = function(sys, nr, engine="R")
 }
 
 
-tau.leap.one.step = function(sys, tau=1, while.max=1000, engine="R")
+tau_leap_one_step = function(sys, tau=1, while.max=1000, engine="R")
 {
     engine = pmatch(engine, c("R","C"))
     
@@ -136,7 +136,7 @@ tau.leap.one.step = function(sys, tau=1, while.max=1000, engine="R")
 
 }
 
-tau.leap = function(sys, n=1, tau=1, while.max=1000, engine="R")
+tau_leap = function(sys, n=1, tau=1, while.max=1000, engine="R")
 {
     engine = pmatch(engine, c("R","C"))
     
@@ -152,7 +152,7 @@ tau.leap = function(sys, n=1, tau=1, while.max=1000, engine="R")
         nr = matrix(NA, n, sys$r)
         for (i in 1:n) { 
             sys$X = X[i,]
-            tmp = tau.leap.one.step(sys,tau[i],while.max,engine="R")
+            tmp = tau_leap_one_step(sys,tau[i],while.max,engine="R")
             X[i+1,] = tmp$X
             nr[i,]  = tmp$nr
         }

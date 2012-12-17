@@ -20,7 +20,7 @@ set.seed(2)
 n = 100
 
 ### True states and transitions
-tl = tau.leap(sckm, n)
+tl = tau_leap(sckm, n)
 
 ### Sample transitions
 p = c(0,.05,0) # Sample probabilities for S->I, E->I, and I->R respectively

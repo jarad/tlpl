@@ -1,3 +1,4 @@
+export(tau_leap)
 export(tlpl)
 export(tlpl_quantile)
 useDynLib(tlpl)
