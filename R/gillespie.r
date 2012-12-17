@@ -136,6 +136,20 @@ tau_leap_one_step = function(sys, tau=1, while.max=1000, engine="R")
 
 }
 
+
+
+#' Performs tau-leaped simulations
+#'
+#' @param sys a list defining a stochastic chemical kinetic system
+#' @param n an integer defining the number of time-points to simulate
+#' @param tau a positive vector defining the times between observations
+#' @param while.max at each time point the maximum number of simulations to try to ensure non-negativity of all species
+#' @param engine use 'R' or 'C'
+#' @return a list containing the species counts at each time point and the number of transitions between each time point
+#' @author Jarad Niemi \email{niemi@@iastate.edu}
+#' @export tau_leap
+#' @useDynLib tlpl
+#'
 tau_leap = function(sys, n=1, tau=1, while.max=1000, engine="R")
 {
     engine = pmatch(engine, c("R","C"))

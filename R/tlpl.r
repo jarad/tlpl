@@ -1,4 +1,15 @@
-# A convenience function to make the prior
+#' A convenience function to make a tlpl prior
+#'
+#' @param X a current state
+#' @param p.a vector of alpha parameters for Beta( alpha, beta) distributions for probabilities
+#' @param p.b vector of beta  parameters for Beta( alpha, beta) distributions for probabilities
+#' @param r.a vector of alpha parameters for Gamma(alpha, beta) distributions for rates
+#' @param r.b vector of beta  parameters for Gamma(alpha, beta) distributions for rates
+#' @return a list containing all parameters in a list
+#' @author Jarad Niemi \email{niemi@@iastate.edu}
+#' @seealso \code{\link{tlpl}}
+#' @export tlpl_prior
+#'
 tlpl_prior = function(X, p.a, p.b, r.a, r.b, nr) 
 {
     if (length(p.a)==1) p.a = rep(p.a, nr)
