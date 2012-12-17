@@ -24,7 +24,7 @@ tlpl_predict = function(sckm, n, tlpl, engine="R", verbose) {
         sckm$X = tlpl$X[,i]
         sckm$theta = rgamma(nr, tlpl$hyper$rate$a[,i],
 		                tlpl$hyper$rate$b[,i])
-        tl = tau.leap(sckm, n, engine=engine)
+        tl = tau_leap(sckm, n, engine=engine)
         X[,i,] = t(tl$X)
 		
         p = rbeta(nr, tlpl$hyper$prob$a[,i], 
