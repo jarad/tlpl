@@ -1,4 +1,5 @@
 export(tau_leap)
+export(tlpl_predict)
 export(tlpl_prior)
 export(tlpl_quantile)
 export(tlpl)
