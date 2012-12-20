@@ -23,7 +23,9 @@
 }
 \value{
   a list containing the species counts at each time point
-  and the number of transitions between each time point
+  ('X') which is an (n+1) x s matrix and the number of
+  transitions between each time point ('nr') which is an n
+  x r matrix
 }
 \description{
   Performs tau-leaped simulations

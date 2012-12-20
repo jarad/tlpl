@@ -157,7 +157,7 @@ tau_leap_one_step = function(sys, tau=1, while.max=1000, engine="R")
 #' @param tau a positive vector defining the times between observations
 #' @param while.max at each time point the maximum number of simulations to try to ensure non-negativity of all species
 #' @param engine use 'R' or 'C'
-#' @return a list containing the species counts at each time point and the number of transitions between each time point
+#' @return a list containing the species counts at each time point ('X') which is an (n+1) x s matrix and the number of transitions between each time point ('nr') which is an n x r matrix
 #' @author Jarad Niemi \email{niemi@@iastate.edu}
 #' @export tau_leap
 #' @useDynLib tlpl
