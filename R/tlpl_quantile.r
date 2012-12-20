@@ -39,6 +39,7 @@ mix.gamma.quantiles = function(a,b,probs,w=1)
 #' @param probs numeric vector of probabilities with values in [0,1]. 
 #' @param which determines which variables quantiles should be produced for
 #' @param verbose level of verbosity while running
+#' @return a list with elements 'X.quantiles', 'p.quantiles', and 'r.quantiles' with dimensions s (or r) x p x n where s is the number of states, r is the number of reactions, p=length(probs), and n is the number of observations
 #' @seealso tlpl
 #' @export tlpl_quantile
 #'

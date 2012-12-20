@@ -16,6 +16,12 @@
 
   \item{verbose}{level of verbosity while running}
 }
+\value{
+  a list with elements 'X.quantiles', 'p.quantiles', and
+  'r.quantiles' with dimensions s (or r) x p x n where s is
+  the number of states, r is the number of reactions,
+  p=length(probs), and n is the number of observations
+}
 \description{
   This function will calculate the desired quantiles for
   tlpl output.
