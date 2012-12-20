@@ -31,6 +31,18 @@ hazard.part = function(sys, engine="R")
     })
 }
 
+
+#' Calculates the hazard for a stochastic chemical kinetic system
+#' 
+#' @param sys the stochastic chemical kinetic system
+#' @param tau the time interval for the hazard
+#' @param engine use 'R' or 'C' code
+#' @return a list containing the hazard and the hazard part (hazard divided by rates)
+#' @author Jarad Niemi \email{niemi@@iastate.edu}
+#' @seealso \code{\link{tau_leap}}
+#' @export hazard
+#' @useDynLib tlpl
+#'
 hazard = function(sys, tau=1, engine="R")
 {
     engine = pmatch(engine, c("R","C"))
