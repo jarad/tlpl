@@ -236,7 +236,7 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
         # C
         ################################################################
         
-        cat("C implementation\n")
+        if (verbose) cat("C implementation\n")
 
         # set default resampling values
         x = list(...)
