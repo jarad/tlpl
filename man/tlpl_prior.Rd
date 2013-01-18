@@ -18,6 +18,8 @@
 
   \item{r.b}{vector of beta parameters for Gamma(alpha,
   beta) distributions for rates}
+
+  \item{nr}{scalar indicating the number of particles}
 }
 \value{
   a list containing all parameters in a list

@@ -5,6 +5,7 @@
 #' @param p.b vector of beta  parameters for Beta( alpha, beta) distributions for probabilities
 #' @param r.a vector of alpha parameters for Gamma(alpha, beta) distributions for rates
 #' @param r.b vector of beta  parameters for Gamma(alpha, beta) distributions for rates
+#' @param nr scalar indicating the number of particles
 #' @return a list containing all parameters in a list
 #' @author Jarad Niemi \email{niemi@@iastate.edu}
 #' @seealso \code{\link{tlpl}}

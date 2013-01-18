@@ -299,7 +299,7 @@ int tlpl(int nObs, int *anY, double *adTau,
                     if (nPart->state[l] < 0) 
                     {
                         nAnyNegative++; 
-                        nAnyNegative =0; // temporary
+                        //nAnyNegative =0;
                         break;
                     }
                     nAnyNegative = 0;
