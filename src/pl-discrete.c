@@ -217,7 +217,7 @@ int tlpl(int nObs, int *anY, double *adTau,
     SckmParticle *nPart; // next particles
 
 
-    int i,j,k,l, nDoResample, anResampledIndices[np], nAnyNegative;
+    int i,j,k,l, anResampledIndices[np], nAnyNegative;
     for (i=0; i<nObs; i++) 
     {
         if (nVerbose) Rprintf("Time point %d, %3.0f%% completed.\n", i+1, (double) (i+1)/nObs*100);
@@ -251,9 +251,8 @@ int tlpl(int nObs, int *anY, double *adTau,
         
         // Resampling
         renormalize(s);
-        nDoResample = doResample(np, w, nNonuniformity, dThreshold);
-        if (nDoResample) {
-            if (nVerbose>1) Rprintf(" Resampling.");
+        if (doResample(np, w, nNonuniformity, dThreshold)) {
+            if (nVerbose>1) Rprintf(" Resampling.\n");
             resample(np, w, np, anResampledIndices, nResamplingMethod);
         } else {
             for (j=0; j<np; j++) anResampledIndices[j] = j;
@@ -271,6 +270,7 @@ int tlpl(int nObs, int *anY, double *adTau,
                 // The first time through take the resampled particle
                 // on any other pass take a new particle
                 k = nAnyNegative==1 ? anResampledIndices[j] : one_multinomial_sample(np, w);
+                if (nVerbose>2) Rprintf("  Index %d\n", k);
                 cPart = s->pParticle[k];               
 
                 GetRNGstate();
@@ -299,7 +299,7 @@ int tlpl(int nObs, int *anY, double *adTau,
                     if (nPart->state[l] < 0) 
                     {
                         nAnyNegative++; 
-                        //nAnyNegative =0;
+                        nAnyNegative =0; // TEMPORARY
                         break;
                     }
                     nAnyNegative = 0;
