@@ -103,7 +103,7 @@ void tau_leap_one_step_R(int *nSpecies, int *nRxns, int *anPre, int *anPost, dou
 int tau_leap_one_step(Sckm *sckm, 
                   const double *adHazard,                 
                   int nWhileMax,                          
-                  int *anRxnCount, int *anX)                                 // return: number of reactions and updated species
+                  int *anRxnCount, int *anX) // return: number of reactions and updated species
 {
     int nSpecies=sckm->s;
     int i, whileCount=0, anTempX[nSpecies];

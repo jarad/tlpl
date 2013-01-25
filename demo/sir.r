@@ -57,7 +57,7 @@ if (ask) readline("Hit <enter> to continue:")
 
 # Perform inference
 cat("\nRunning sequential inference...\n")
-prior = tlpl_prior(sckm$X, 1e6*p, 1e6*(1-p), sckm$theta*1e6, 1e6, sckm$r)
+prior = tlpl_prior(sckm$X, 10*p, 10*(1-p), sckm$theta*10, 10, sckm$r)
 z = tlpl(list(y=y, tau=1), sckm, prior=prior, n.particles=1e4, engine="C", verbose=1)
 
 cat("\nCalculating quantiles...\n")
