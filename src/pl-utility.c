@@ -6,7 +6,7 @@
 int suff_stat_update(int nRxns, const int *anRxnCount, const int *anY, const double *anHazardPart, 
                       double *adHyper) 
 {
-    int i,j;
+    int i;
     int o1=nRxns,o2=2*nRxns,o3=3*nRxns; // offsets
     for (i=0; i<nRxns; i++) 
     {

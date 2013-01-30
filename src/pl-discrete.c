@@ -177,7 +177,6 @@ void tlpl_R(
            double *adRateB
            )
 {
-    int i;
     Sckm *sckm = newSckm(*nSpecies, *nRxns, anPre, anPost, adlMult);
 
     SckmSwarm **swarm = newSckmSwarms(sckm, *nParticles, *nObs, 

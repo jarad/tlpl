@@ -202,30 +202,31 @@ void entropy_R(int *n, double *weights, double *returned) {
 
 double entropy(int n, double *weights)
 {
-    int i;
-    double sum;
-    for (i=0; i<n; i++) sum += weights[i]*log2(weights[i]); // should add smallest constant within log2()
-    return -sum;
+  int i;
+  double sum=0;
+  for (i=0; i<n; i++) sum += weights[i]*log2(weights[i]); // should add smallest constant within log2()
+  return -sum;
 }
 
 
 
 int doResample(int n, double *weights, int nNonuniformity, double dThreshold)
 {
-    int dr=0;
-    switch(nNonuniformity)
-    {
-        case 1: // "none" means always resample
-            return 1;
-        case 2: 
-            return ess(    n, weights) < dThreshold ? 1 : 0;
-        case 3: 
-            return cov2(   n, weights) > dThreshold ? 1 : 0; // notice the greater than sign
-        case 4: 
-            return entropy(n, weights) < dThreshold ? 1 : 0;
-        default:
-            error("Nonuniformity measure not found.\n");
-    }
+  switch(nNonuniformity)
+  {
+    case 1: // "none" means always resample
+      return 1;
+    case 2: 
+      return ess(    n, weights) < dThreshold ? 1 : 0;
+    case 3: 
+      return cov2(   n, weights) > dThreshold ? 1 : 0; // notice the greater than sign
+    case 4: 
+      return entropy(n, weights) < dThreshold ? 1 : 0;
+    default:
+      error("Nonuniformity measure not found.\n");
+  }
+  error("doResample exited switch without a proper response");
+  return -1;
 }
 
 

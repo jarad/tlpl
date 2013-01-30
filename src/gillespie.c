@@ -112,7 +112,6 @@ int tau_leap_one_step(Sckm *sckm,
         memcpy(anTempX, anX, nSpecies*sizeof(int));
 
         // Get number of reactions
-        int i;
         GetRNGstate();
         for (i=0; i<sckm->r; i++) anRxnCount[i] = rpois(adHazard[i]);
         PutRNGstate();
@@ -191,6 +190,9 @@ int next_to_fire(int nRxns, double *adCuSum) {
         next++;
     }   
     // print error if this fails
+
+    error("next_to_fire failed to find a reaction\n");
+    return -1;
 }
 
 
@@ -207,7 +209,7 @@ int gillespie_one_step(Sckm *sckm, const double *adTheta, double dT, int *anRxnC
 {
     int nSpecies = sckm->s, nRxns = sckm->r;
     int i, nRxnID, anX0[nSpecies];
-    double dCurrentTime=0, adHazardPart[nRxns], adHazard[nRxns], adCuSum;
+    double dCurrentTime=0, adHazardPart[nRxns], adHazard[nRxns];
     while (1) {
         memcpy(anX0, anX, nSpecies*sizeof(int));
         hazard(sckm, adTheta, anX, 1, adHazardPart, adHazard);
@@ -245,7 +247,6 @@ int gillespie(Sckm *sckm, const double *adTheta, double *adT, int nSteps, int *a
 {
     int i, nSO=0, nr = sckm->r, ns = sckm->s;
     int anRxnCount[nr];
-    double adHazardPart[nr], adHazard[nr];
     for (i=0; i<nSteps;i++)
     {
         memcpy(&anX[nSO+ns], &anX[nSO], ns*sizeof(int));
