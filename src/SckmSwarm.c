@@ -36,7 +36,7 @@ SckmSwarm **newSckmSwarms(Sckm *sckm, int _nParticles, int _nObs,
 }
 
 
-void **deleteSckmSwarms(SckmSwarm **swarms, int nObs)
+void deleteSckmSwarms(SckmSwarm **swarms, int nObs)
 {
     for (int i=0; i<=nObs; i++) deleteSckmSwarm(swarms[i]);
     assert(swarms); free(swarms);

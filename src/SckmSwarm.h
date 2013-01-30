@@ -14,7 +14,7 @@ typedef struct StochasticChemicalKineticModelSwarm {
 SckmSwarm **newSckmSwarms(Sckm *sckm, int _nParticles, int _nObs,
                         int *_state,
                         double *_probA, double *_probB, double *_rateA, double *_rateB);
-void **deleteSckmSwarms(SckmSwarm **swarms, int nObs);
+void deleteSckmSwarms(SckmSwarm **swarms, int nObs);
 
 SckmSwarm *newSckmSwarm(Sckm *sckm, int _nParticles,
                         int *_state,
