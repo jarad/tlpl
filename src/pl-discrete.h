@@ -47,6 +47,7 @@ void tlpl_R(
            int *nNonuniformity,
            double *dThreshold,
            int *nVerbose,
+           int *nWhileMax,
 
            /* Outputs */
            int *anX,
@@ -56,8 +57,22 @@ void tlpl_R(
            double *adRateB
            );
 
-int tlpl(int nObs, int *anY, double *adTau,
-         Sckm *sckm, SckmSwarm **swarm,
-         int nResamplingMethod, int nNonuniformity, double dTreshold, int nVerbose);
+int tlpl(
+         /* Data */ 
+         int nObs, 
+         int *anY, 
+         double *adTau,
+
+         /* Sckm */
+         Sckm *sckm, 
+         SckmSwarm **swarm,
+
+         /* Auxiliary */
+         int nResamplingMethod, 
+         int nNonuniformity, 
+         double dTreshold, 
+         int nVerbose,
+         int nWhileMax
+         );
 
 #endif                   // guard pl-discrete.h

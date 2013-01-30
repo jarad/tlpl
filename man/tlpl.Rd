@@ -3,7 +3,8 @@
 \title{Performs tau-leaped particle learning}
 \usage{
   tlpl(data, sckm, swarm = NULL, prior = NULL,
-    n.particles = NULL, engine = "C", verbose = 0, ...)
+    n.particles = NULL, engine = "C", verbose = 0,
+    while.max = 1000, ...)
 }
 \arguments{
   \item{data}{a list with elements y and tau}
@@ -19,6 +20,9 @@
   \item{engine}{use 'R' or 'C' code}
 
   \item{verbose}{level of output}
+
+  \item{while.max}{an integer indicating the maximum number
+  of times through a while loop}
 
   \item{...}{additional parameters for resampling}
 }

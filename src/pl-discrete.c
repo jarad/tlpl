@@ -168,6 +168,7 @@ void tlpl_R(
            int *nNonuniformity,
            double *dThreshold,
            int *nVerbose,
+           int *nWhileMax,
 
            /* Outputs */
            int *anX,
@@ -184,7 +185,7 @@ void tlpl_R(
     
     tlpl(*nObs, anY, adTau,
          sckm, swarm, 
-         *nResamplingMethod, *nNonuniformity, *dThreshold, *nVerbose);
+         *nResamplingMethod, *nNonuniformity, *dThreshold, *nVerbose, *nWhileMax);
 
     deleteSckmSwarms(swarm, *nObs);
     deleteSckm(sckm);
@@ -197,7 +198,8 @@ void tlpl_R(
 
 int tlpl(int nObs, int *anY, double *adTau,
          Sckm *sckm, SckmSwarm **swarm,
-         int nResamplingMethod, int nNonuniformity, double dThreshold, int nVerbose)
+         int nResamplingMethod, int nNonuniformity, double dThreshold, int nVerbose,
+         int nWhileMax)
 {
   int nr = sckm->r, ns = sckm->s, np = swarm[0]-> nParticles; 
   int anUnobservedTransitions[nr], anTotalTransitions[nr];
