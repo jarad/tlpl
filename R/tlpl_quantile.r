@@ -1,5 +1,5 @@
 # Calculates the quantiles for a mixture of beta distributions
-mix.beta.quantiles = function(a,b,probs,w=1)
+mix.betaq = function(a,b,probs,w=1)
 {
   n = length(a)
   p = length(probs)
@@ -16,7 +16,7 @@ mix.beta.quantiles = function(a,b,probs,w=1)
 }
 
 # Calculates the quantiles for a mixture of beta distributions
-mix.gamma.quantiles = function(a,b,probs,w=1)
+mix.gammaq = function(a,b,probs,w=1)
 {
   n = length(a)
   p = length(probs)
@@ -39,7 +39,7 @@ mix.gamma.quantiles = function(a,b,probs,w=1)
 #' @param probs numeric vector of probabilities with values in [0,1]. 
 #' @param which determines which variables quantiles should be produced for
 #' @param verbose level of verbosity while running
-#' @return a list with elements 'X.quantiles', 'p.quantiles', and 'r.quantiles' with dimensions s (or r) x p x n where s is the number of states, r is the number of reactions, p=length(probs), and n is the number of observations
+#' @return a list with elements 'Xq', 'pq', and 'rq' with dimensions s (or r) x p x n where s is the number of states, r is the number of reactions, p=length(probs), and n is the number of observations
 #' @seealso tlpl
 #' @export tlpl_quantile
 #'
@@ -54,9 +54,9 @@ tlpl_quantile = function(tlpl, probs=c(.025,.5,.975), which="xpr", verbose=1)
  
   if (do$p || do$r) { r = dim(tlpl$hyper$prob$a)[1] }
  
-  if (do$x) { X.quantiles = array(NA, dim=c(s,p,n)) } else { X.quantiles=NULL }
-  if (do$p) { p.quantiles = array(NA, dim=c(r,p,n)) } else { p.quantiles=NULL }
-  if (do$r) { r.quantiles = array(NA, dim=c(r,p,n)) } else { r.quantiles=NULL }
+  if (do$x) { Xq = array(NA, dim=c(s,p,n)) } else { Xq=NULL }
+  if (do$p) { pq = array(NA, dim=c(r,p,n)) } else { pq=NULL }
+  if (do$r) { rq = array(NA, dim=c(r,p,n)) } else { rq=NULL }
 
   for (i in 1:n) 
   {   
@@ -64,20 +64,20 @@ tlpl_quantile = function(tlpl, probs=c(.025,.5,.975), which="xpr", verbose=1)
 
     if (do$x) 
     {
-      for (j in 1:s) X.quantiles[j,,i] = quantile(tlpl$X[j,,i], probs=probs)
+      for (j in 1:s) Xq[j,,i] = quantile(tlpl$X[j,,i], probs=probs)
     }
 
     if (do$p) 
     {
-      for (j in 1:r) p.quantiles[j,,i] = mix.beta.quantiles( tlpl$hyper$prob$a[j,,i], tlpl$hyper$prob$b[j,,i], probs)
+      for (j in 1:r) pq[j,,i] = mix.betaq( tlpl$hyper$prob$a[j,,i], tlpl$hyper$prob$b[j,,i], probs)
     }
         
     if (do$r)
     {
-      for (j in 1:r) r.quantiles[j,,i] = mix.gamma.quantiles(tlpl$hyper$rate$a[j,,i], tlpl$hyper$rate$b[j,,i], probs)
+      for (j in 1:r) rq[j,,i] = mix.gammaq(tlpl$hyper$rate$a[j,,i], tlpl$hyper$rate$b[j,,i], probs)
     }
   }
 
-  return(list(X.quantiles=X.quantiles, p.quantiles=p.quantiles, r.quantiles=r.quantiles))
+  return(list(Xq=Xq, pq=pq, rq=rq))
 }
 
