@@ -300,6 +300,12 @@ int tlpl(int nObs, int *anY, double *adTau,
         {
           nAnyNegative = 0;
         }
+
+        // Limit how long the simulation tries to find a non-negative update
+        if (nAnyNegative>nWhileMax) 
+          return 1;
+           error("C:tlpl: Too many unsuccessful simulation iterations.");
+
       } // while(nAnyNegative)
 
       // Update sufficient statistics
