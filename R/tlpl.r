@@ -282,36 +282,36 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
 
   tmp = .C("tlpl_R",
 
-       # Inputs
-       ## Data
-       as.integer(n),
-       as.integer(data$y),
-       as.double( data$tau),
+           # Inputs
+           ## Data
+           as.integer(n),
+           as.integer(data$y),
+           as.double( data$tau),
          
-     ## sckm
-       as.integer(sckm$s),
-       as.integer(sckm$r),
-       as.integer(t(sckm$Pre)),
-       as.integer(t(sckm$Post)),
-       as.double(sckm$lmult),
+           ## sckm
+           as.integer(sckm$s),
+           as.integer(sckm$r),
+           as.integer(t(sckm$Pre)),
+           as.integer(t(sckm$Post)),
+           as.double(sckm$lmult),
          
-       ## particles
-       as.integer(swarm$n.particles),
+           ## particles
+           as.integer(swarm$n.particles),
 
-       ## Auxiliary
-       as.integer(x$method),
-       as.integer(x$nonuniformity),
-       as.double( x$threshold),
-       as.integer(verbose),
-       as.integer(while.max),
+           ## Auxiliary
+           as.integer(x$method),
+           as.integer(x$nonuniformity),
+           as.double( x$threshold),
+           as.integer(verbose),
+           as.integer(while.max),
 
-       # Outputs (pre-filled with t=1 values)
-       X   = as.integer(out$X),
-       proba = as.double( out$hyper$prob$a),
-       probb = as.double( out$hyper$prob$b),
-       ratea = as.double( out$hyper$rate$a),
-     rateb = as.double( out$hyper$rate$b)
-       )
+           # Outputs (pre-filled with t=1 values)
+           X   = as.integer(out$X),
+           proba = as.double( out$hyper$prob$a),
+           probb = as.double( out$hyper$prob$b),
+           ratea = as.double( out$hyper$rate$a),
+           rateb = as.double( out$hyper$rate$b)
+          )
 
   # Re-organize output
   # ?? make sure this is done properly
