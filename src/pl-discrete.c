@@ -83,7 +83,7 @@ int cond_discrete_sim_step(Sckm *sckm, const double *adHazard, const int *anY, c
     whileCount++;
     if (whileCount>nWhileMax) 
     {
-      return 1;
+      //return 1;
       error("C:cond_discrete_sim_step: Too many unsuccessful simulation iterations.");
     }
   }
@@ -305,7 +305,7 @@ int tlpl(int nObs, int *anY, double *adTau,
 
         // Limit how long the simulation tries to find a non-negative update
         if (nAnyNegative>nWhileMax) { 
-          return 1;
+          //return 1;
           error("C:tlpl: Too many unsuccessful simulation iterations.");
         }
 
