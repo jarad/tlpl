@@ -13,8 +13,6 @@ int rep2id(int *, int , int *);
 void inverse_cdf_weights_R(int *, double *, int *, double *, int *);
 int inverse_cdf_weights(int , double *, int , double *, int *);
 
-int one_multinomial_sample(int nW, double *adWeights);
-
 
 void ess_R(int *, double *, double *);
 double ess(int , double *);

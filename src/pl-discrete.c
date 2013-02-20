@@ -270,7 +270,15 @@ int tlpl(int nObs, int *anY, double *adTau,
       {
         // The first time through take the resampled particle
         // on any other pass take a new particle
-        k = (nAnyNegative>1) ? one_multinomial_sample(np, w) : anResampledIndices[j];
+        if (nAnyNegative==1)
+        {
+          k = anResampledIndices[j];
+        } 
+        else
+        {
+          multinomial_resample(np, w, 1, &k);
+        }
+
         if (nVerbose>2) Rprintf("  nAnyNegative: %d, Index: %d\n", nAnyNegative, k);
         cPart = s->pParticle[k];               
 
