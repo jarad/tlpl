@@ -208,6 +208,7 @@ int tlpl(int nObs, int *anY, double *adTau,
   double rate[nr], mn[nr];
   double *hp   = (double *) malloc( np * nr * sizeof(double));
   double *prob = (double *) malloc( np * nr * sizeof(double));
+  double *weights = (double * ) malloc(np * sizeof(double));
 
   // Pointers 
   int *cY;      cY   = anY;   // current observations
@@ -252,6 +253,8 @@ int tlpl(int nObs, int *anY, double *adTau,
          
     // Resampling
     renormalize(s);
+    memcpy(weights, w, np*sizeof(double));
+
     if (doResample(np, w, nNonuniformity, dThreshold)) {
       if (nVerbose>1) Rprintf(" Resampling.\n");
       resample(np, w, np, anResampledIndices, nResamplingMethod);
@@ -276,7 +279,7 @@ int tlpl(int nObs, int *anY, double *adTau,
         } 
         else
         {
-          multinomial_resample(np, w, 1, &k);
+          multinomial_resample(np, weights, 1, &k);
         }
 
         if (nVerbose>2) Rprintf("  nAnyNegative: %d, Index: %d\n", nAnyNegative, k);
@@ -334,6 +337,7 @@ int tlpl(int nObs, int *anY, double *adTau,
     cTau++; 
   }
 
+  free(weights);
   free(prob);
   free(hp);
 
