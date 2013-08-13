@@ -14,6 +14,7 @@ test.system = function(i=1)
         r = nrow(Pre)
         theta =  rgamma(r, 100, 100)
         stoich = t(Post-Pre)
+        lmult = rep(1,r)
         foundi = TRUE
     }, 
     {
@@ -24,13 +25,14 @@ test.system = function(i=1)
         theta =  rgamma(r, 100, 100)
         Post = matrix(1,nrow=r,ncol=s)
         stoich = t(Post-Pre)
+        lmult = rep(1,r)
         foundi = TRUE
     })
 
     # Used in place of a default switch case
     if (!foundi) stop("Test system doesn't exist.")
 
-    return(list(r=r,s=s,Pre=Pre,Post=Post,stoich=stoich,theta=theta,X=X))
+    return(list(r=r,s=s,Pre=Pre,Post=Post,stoich=stoich,theta=theta,X=X,lmult=lmult,mult=exp(lmult)))
 }
 
 

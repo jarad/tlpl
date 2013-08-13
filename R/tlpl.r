@@ -58,7 +58,7 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
   n = ncol(data$y)
   if (length(data$tau)==1) data$tau = rep(data$tau,n)
   stopifnot(length(data$tau)==n)
-  stopifnot(nrow(data$y)==nr) # Only observations on transitions are currently implemented
+  stopifnot(ncol(data$y)==nr) # Only observations on transitions are currently implemented
 
   check.system(sckm)
 
