@@ -152,20 +152,20 @@ int tau_leap(Sckm *sckm, const double *adTheta,
          int nWhileMax,
          int *anRxnCount, int *anX)
 {
-    int nRxns = sckm->r, nSpecies = sckm->s;
-    int i, *ipLast, *ipCurrent;
-    ipLast     = anX;             // Points to last state
-    ipCurrent  = ipLast+nSpecies; // Points to current state
+  int nRxns = sckm->r, nSpecies = sckm->s;
+  int i, *ipLast, *ipCurrent;
+  ipLast     = anX;             // Points to last state
+  ipCurrent  = ipLast+nSpecies; // Points to current state
 
-    double adHazardPart[nRxns], adHazard[nRxns];
-    for (i=0; i<nSteps;i++)
-    {
-        memcpy(ipCurrent, ipLast, nSpecies*sizeof(int));
-        hazard(sckm, adTheta, ipCurrent, adTau[i], adHazardPart, adHazard);
-        tau_leap_one_step(sckm, adHazard, nWhileMax, &anRxnCount[i*nRxns], ipCurrent);
-        ipLast += nSpecies; ipCurrent += nSpecies;
-    }
-    return 0;
+  double adHazardPart[nRxns], adHazard[nRxns];
+  for (i=0; i<nSteps; i++)
+  {
+    memcpy(ipCurrent, ipLast, nSpecies*sizeof(int));
+    hazard(sckm, adTheta, ipCurrent, adTau[i], adHazardPart, adHazard);
+    tau_leap_one_step(sckm, adHazard, nWhileMax, &anRxnCount[i*nRxns], ipCurrent);
+    ipLast += nSpecies; ipCurrent += nSpecies;
+  }
+  return 0;
 }
 
 

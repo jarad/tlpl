@@ -165,7 +165,8 @@ tau_leap_one_step = function(sys, tau=1, while.max=1000, engine="R")
 tau_leap = function(sys, n=1, tau=1, while.max=1000, engine="R")
 {
     engine = pmatch(engine, c("R","C"))
-    
+   
+    sys$lmult = log(sys$mult) 
     check.system(sys)
     stopifnot(tau>0, while.max>0, n>0)
     if (length(tau)==1) tau=rep(tau,n)
@@ -191,7 +192,7 @@ tau_leap = function(sys, n=1, tau=1, while.max=1000, engine="R")
                  as.integer(sys$r), 
                  as.integer(t(sys$Pre)), 
                  as.integer(t(sys$Post)), 
-                 as.integer(sys$lmult),
+                 as.double(sys$lmult),
                  as.double(sys$theta), 
                  as.double(tau), 
                  as.integer(n), 
