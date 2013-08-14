@@ -23,15 +23,8 @@ test_that("tlpl: constitutive production", {
     dat$y = matrix(1, n, 1)
     dat$tau = 1
     res = tlpl(dat,sys,nonuniformity="ess",threshold=0)
-    np = dim(res$X)[3];
-    expect_equal(res$hyper$prob$a, array(1:(n+1), dim=c(n+1,1,np)))
-
-    z =  apply(res$X, 3, diff)-matrix(dat$y, n, np)                   # unobserved transitions
-    b = array(apply(rbind(rep(1,np), z), 2, cumsum), dim=c(n+1,1,np)) # updated hyper parameter
-    expect_equal(res$hyper$prob$b, b)
-
-    expect_equal(res$hyper$rate$a, res$X) 
-    expect_equal(res$hyper$rate$b, array(1:(n+1), dim=c(n+1,1,np)))
+    np = 2
+    expect_equal(res$hyper$prob$a, array(rep(1:(n+1),each=2), dim=c(1,np,n+1)))
 })
 
 
