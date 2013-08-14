@@ -33,7 +33,7 @@ tlpl_prior = function(X, p.a, p.b, r.a, r.b, nr)
 
 #' Performs tau-leaped particle learning
 #'
-#' @param data a list with elements y and tau
+#' @param data a list with elements y, matrix with n rows representing time points, and tau, either length n vector or a scalar.
 #' @param sckm a list with a bunch of elements
 #' @param swarm a particle swarm
 #' @param prior a prior to be used for all particles
@@ -53,9 +53,11 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
 {
   nr = sckm$r
   ns = sckm$s 
+  sckm$lmult = log(sckm$mult)
 
   # Check data, sckm, swarm
-  n = ncol(data$y)
+  stopifnot(all(data$tau>0))
+  n = nrow(data$y)
   if (length(data$tau)==1) data$tau = rep(data$tau,n)
   stopifnot(length(data$tau)==n)
   stopifnot(ncol(data$y)==nr) # Only observations on transitions are currently implemented
@@ -86,19 +88,6 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
                  X           = matrix(prior$X, ns, np),
                  hyper       = list(prob = list(a = matrix(prior$prob$a, nr, np), b = matrix(prior$prob$b, nr, np)),
                                     rate = list(a = matrix(prior$rate$a, nr, np), b = matrix(prior$rate$b, nr, np))))
-    #swarm$n.particles = np
-    #swarm$weights = rep(1/np, np)
-    #swarm$normalized = TRUE
-    #swarm$log.weights = FALSE
-    #swarm$X = matrix(prior$X, ns, np)
-    #swarm$hyper = list()
-    #swarm$hyper$prob = list()
-    #swarm$hyper$prob$a = matrix(prior$prob$a, nr, np)
-    #swarm$hyper$prob$b = matrix(prior$prob$b, nr, np)
-    #swarm$hyper$rate = list()
-    #swarm$hyper$rate$a = matrix(prior$rate$a, nr, np)
-    #swarm$hyper$rate$b = matrix(prior$rate$b, nr, np)
-    
   } else 
   { # !is.null(swarm)
     np = swarm$n.particles
@@ -110,15 +99,6 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
   out = list(X = array(0, dim=c(ns,np,n+1)),
              hyper = list(prob = list(a = array(0, dim=c(nr,np,n+1)), b = array(0, dim=c(nr,np,n+1))),
                           rate = list(a = array(0, dim=c(nr,np,n+1)), b = array(0, dim=c(nr,np,n+1)))))
-  
-  #out$X = array(0, dim=c(ns,np,n+1))
-  #out$hyper = list()
-  #out$hyper$prob = list()
-  #out$hyper$prob$a = array(0, dim=c(nr,np,n+1))
-  #out$hyper$prob$b = array(0, dim=c(nr,np,n+1))
-  #out$hyper$rate = list()
-  #out$hyper$rate$a = array(0, dim=c(nr,np,n+1))
-  #out$hyper$rate$b = array(0, dim=c(nr,np,n+1))
 
   # Fill output with initial values
   out$X[,,1] = swarm$X
@@ -150,7 +130,7 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
   for (i in 1:n) 
   {  
     if (verbose) cat(paste("Time point ",i,", ",round(i/n*100), "% completed.\n", sep=''))
-    y = data$y[,i]
+    y = data$y[i,]
     tau = data$tau[i]
 
     # Sample observation probability
@@ -159,83 +139,84 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
     # Calculate all particle weights
     for (j in 1:n.particles) 
     {      
-    for (k in 1:nr) 
-  {
-      hp[k,j] = exp(sum(lchoose(swarm$X[,j], sckm$Pre[k,]))+sckm$lmult[k])
-  }
-    hp[,j] = hp[,j] * tau
+      for (k in 1:nr) 
+      {
+        hp[k,j] = exp(sum(lchoose(swarm$X[,j], sckm$Pre[k,]))+sckm$lmult[k])
+      }
+      hp[,j] = hp[,j] * tau
 
-    ph = swarm$p[,j] * hp[,j]
-    prob = ph/(swarm$hyper$rate$b[,j]+ph) 
-    nz = which(ph>0) # otherwise NaNs produced
-    w[j] = sum(dnbinom(y[nz], swarm$hyper$rate$a[nz,j], 1-prob[nz], log=T))
+      ph = swarm$p[,j] * hp[,j]
+      prob = ph/(swarm$hyper$rate$b[,j]+ph) 
+      nz = which(ph>0) # otherwise NaNs produced
+      w[j] = sum(dnbinom(y[nz], swarm$hyper$rate$a[nz,j], 1-prob[nz], log=T))
 
-    # If particle outbreak is over but data indicates continuing outbreak,
-    # particle weight becomes 0 ( log(weight)=-Inf )
-    if (any(ph==0)) { if (any(y[ph==0]!=0)) w[j] = -Inf }
+      # If particle outbreak is over but data indicates continuing outbreak,
+      # particle weight becomes 0 ( log(weight)=-Inf )
+      if (any(ph==0)) { if (any(y[ph==0]!=0)) w[j] = -Inf }
     }
 
     # Resample particles
-    w = renormalize.weights(w, log=T)
+    w = exp(w-max(w))
+    w = w/sum(w)
     rs = resample(w,...)$indices
 
     for (j in 1:np)
     {         
-    if (verbose>1 && (j%%100)==0) 
-      cat(paste("  Particle ",j,", ",round(j/np*100), "% completed.\n", sep=''))
+      if (verbose>1 && (j%%100)==0) 
+        cat(paste("  Particle ",j,", ",round(j/np*100), "% completed.\n", sep=''))
 
-    any.negative = 1
-    while (any.negative>0) 
-    {
-      # To ensure a new particle is resampled
-      # Clearly reasonable for multinomial resampling, but what about the rest? 
-      #kk = resample(w,1, method="multinomial")$indices # new particle id
-      kk = ifelse(any.negative==1, rs[j],
-            resample(w,1, method="multinomial")$indices) 
-
-      # Calculate mean for unobserved transitions
-      lambda = rgamma(nr, swarm$hyper$rate$a[,kk], swarm$hyper$rate$b[,kk])
-
-      mn = (1-swarm$p[,kk])* lambda * hp[,kk]
-
-      # Sample transitions and update state
-      z = rpois(nr, mn) # unobserved transitions
-      n.rxns = y + z  # total transitions
-      newswarm$X[,j] = swarm$X[,kk] + sckm$stoich %*% n.rxns
-
-      # Check to see if any state is negative 
-      if (any(newswarm$X[,j]<0)) 
+      any.negative = 1
+      while (any.negative>0) 
       {
-      any.negative = any.negative+1
-      } else 
-      {
-      any.negative = 0
-      }
+        # To ensure a new particle is resampled
+        # Clearly reasonable for multinomial resampling, but what about the rest? 
+        #kk = resample(w,1, method="multinomial")$indices # new particle id
+        kk = ifelse(any.negative==1, rs[j],
+              resample(w,1, method="multinomial")$indices) 
 
-      if (any.negative && verbose) 
-      {
-      cat(paste("Particle",kk,"failed.\n"))
-      cat("Probabilities: ")
-      for (k in 1:nr) cat(paste(swarm$p[k,kk]," "))
-      cat("\nRates: ")
-      for (k in 1:nr) cat(paste(lambda[k]," "))
-      cat("\nStates: ")
-      for (k in 1:ns) cat(paste(swarm$X[k,kk]," "))
-      cat("\nData: ")
-      for (k in 1:nr) cat(paste(y[k]," "))
-      cat("\nHazard parts: ")
-      for (k in 1:nr) cat(paste(hp[k,kk]," "))
-      cat(paste("\nWeight:",w[kk],"\n"))
-      }
+        # Calculate mean for unobserved transitions
+        lambda = rgamma(nr, swarm$hyper$rate$a[,kk], swarm$hyper$rate$b[,kk])
 
-      stopifnot(any.negative<while.max)
-    } # while(any.negative)
+        mn = (1-swarm$p[,kk])* lambda * hp[,kk]
 
-    # Update sufficient statistics
-    newswarm$hyper$prob$a[,j] = swarm$hyper$prob$a[,kk] + y
-    newswarm$hyper$prob$b[,j] = swarm$hyper$prob$b[,kk] + z
-    newswarm$hyper$rate$a[,j] = swarm$hyper$rate$a[,kk] + n.rxns
-    newswarm$hyper$rate$b[,j] = swarm$hyper$rate$b[,kk] + hp[,kk]
+        # Sample transitions and update state
+        z = rpois(nr, mn) # unobserved transitions
+        n.rxns = y + z  # total transitions
+        newswarm$X[,j] = swarm$X[,kk] + sckm$stoich %*% n.rxns
+
+        # Check to see if any state is negative 
+        if (any(newswarm$X[,j]<0)) 
+        {
+          any.negative = any.negative+1
+        } else 
+        {
+          any.negative = 0
+        }
+
+        if (any.negative && verbose) 
+        {
+          cat(paste("Particle",kk,"failed.\n"))
+          cat("Probabilities: ")
+          for (k in 1:nr) cat(paste(swarm$p[k,kk]," "))
+          cat("\nRates: ")
+          for (k in 1:nr) cat(paste(lambda[k]," "))
+          cat("\nStates: ")
+          for (k in 1:ns) cat(paste(swarm$X[k,kk]," "))
+          cat("\nData: ")
+          for (k in 1:nr) cat(paste(y[k]," "))
+          cat("\nHazard parts: ")
+          for (k in 1:nr) cat(paste(hp[k,kk]," "))
+          cat(paste("\nWeight:",w[kk],"\n"))
+        }
+
+        stopifnot(any.negative<while.max)
+      } # while(any.negative)
+
+      # Update sufficient statistics
+      newswarm$hyper$prob$a[,j] = swarm$hyper$prob$a[,kk] + y
+      newswarm$hyper$prob$b[,j] = swarm$hyper$prob$b[,kk] + z
+      newswarm$hyper$rate$a[,j] = swarm$hyper$rate$a[,kk] + n.rxns
+      newswarm$hyper$rate$b[,j] = swarm$hyper$rate$b[,kk] + hp[,kk]
     } # j: loop over particles
 
     swarm = newswarm
