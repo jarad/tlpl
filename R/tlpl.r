@@ -117,6 +117,8 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
   # R
   ################################################################
 
+  require(smcUtils)
+
   # Create variables used throughout
   part = list()
   part$hyper = list()
@@ -156,10 +158,10 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
     }
 
     # Resample particles
-    w = exp(w-max(w))
-    w = w/sum(w)
+    w = renormalize(w,log=T)
     rs = resample(w,...)$indices
 
+    # Propagate particles
     for (j in 1:np)
     {         
       if (verbose>1 && (j%%100)==0) 
