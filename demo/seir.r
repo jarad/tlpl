@@ -13,7 +13,7 @@ sckm$stoich = t(sckm$Post-sckm$Pre)
 sckm$X = c(16000,0,100,0)
 N = sum(sckm$X)
 sckm$theta = c(0.5,0.25,0.25)
-sckm$lmult = log(c(1/N,1,1))
+sckm$mult = c(1/N,1,1)
 
 ## Simulate data
 set.seed(2)
@@ -24,7 +24,7 @@ tl = tau_leap(sckm, n)
 
 ### Sample transitions
 p = c(0,.05,0) # Sample probabilities for S->I, E->I, and I->R respectively
-y = rbind(rbinom(n, tl$nr[,1], p[1]), 
+y = cbind(rbinom(n, tl$nr[,1], p[1]), 
           rbinom(n, tl$nr[,2], p[2]),
           rbinom(n, tl$nr[,3], p[3]))
 
@@ -42,20 +42,20 @@ legend("topright", c("S","E","I","R"), col=clrs, lwd=ld)
 
 
 
-plot( y[1,], type="p", pch=19, ylim=range(y), lwd=ld, col=clrs[2], 
+plot( y[,1], type="p", pch=19, ylim=range(y), lwd=ld, col=clrs[2], 
       xlab="Time", ylab="Number", main="Observations")
-points(y[2,], lwd=ld, col=clrs[3], pch=19)
-points(y[3,], lwd=ld, col=clrs[4], pch=19)
+points(y[,2], lwd=ld, col=clrs[3], pch=19)
+points(y[,3], lwd=ld, col=clrs[4], pch=19)
 legend("topright", c("S->E","E->I","I->R"), col=clrs[2:4], lwd=ld)
 
 
 
 ### Cumulative transitions
 y2 = t(apply(y,1,cumsum))
-plot( y2[1,], type="l", ylim=range(y2), lwd=ld, col=clrs[2], 
+plot( y2[,1], type="l", ylim=range(y2), lwd=ld, col=clrs[2], 
       xlab="Time", ylab="Number", main="Cumulative Observations")
-lines(y2[2,], lwd=ld, col=clrs[3])
-lines(y2[3,], lwd=ld, col=clrs[4])
+lines(y2[,2], lwd=ld, col=clrs[3])
+lines(y2[,3], lwd=ld, col=clrs[4])
 legend("topleft", c("S->E","E->I","I->R"), col=clrs[2:4], lwd=ld)
 
 
