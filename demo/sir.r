@@ -6,7 +6,7 @@ ask   = FALSE
 
 ## Simulate data
 set.seed(2)
-sckm = sir(X=c(16000, 100, 0), theta=c(.5,.25))
+sckm = sckm("sir", X=c(16000, 100, 0), theta=c(.5,.25))
 n = 50
 
 ### True states and transitions
@@ -46,8 +46,14 @@ if (plots) dev.copy2pdf(file="example2-data.pdf")
 
 # Perform inference
 cat("\nRunning sequential inference...\n")
-prior = tlpl_prior(sckm$X, 100*p, 100*(1-p), sckm$theta*100, 100, sckm$r)
-z = tlpl(list(y=y, tau=1), sckm, prior=prior, n.particles=1e3, engine="R", verbose=1)
+np = 1e3
+
+Xprior = matrix(0, sckm$s, np)
+Xprior[1,] = rbinom(np, sum(sckm$X), sckm$X[1]/sum(sckm$X))
+Xprior[2,] = sum(sckm$X) - Xprior[1,]
+
+prior = tlpl_prior(Xprior , 100*p, 100*(1-p), sckm$theta*100, 100, sckm$r)
+z = tlpl(list(y=y, tau=1), sckm, prior=prior, n.particles=np, engine="R", verbose=1)
 
 cat("\nCalculating quantiles...\n")
 qs = tlpl_quantile(z)
