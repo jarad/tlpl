@@ -74,19 +74,6 @@ random.system = function(seed=1,r=NULL,s=NULL)
 }
 
 
-sir = function(X=c(1000,10,0),theta=c(0.25,0.5)) {
-  stopifnot(length(X)==3, length(theta)==2)
-
-  Pre  = rbind(c(1,1,0), c(0,1,0))
-  Post = rbind(c(0,2,0), c(0,0,1))
-  stoich = t(Post-Pre)
-  mult = c(1/sum(X), 1)
- 
-  sys = list(r=2,s=3,Pre=Pre,Post=Post,stoich=stoich,theta=theta,X=X,mult=mult)
-  check.system(sys)
- 
-  return(sys)
-}
 
 
 check.system = function(sys) {
@@ -108,6 +95,28 @@ check.system = function(sys) {
             all(sys$mult >=0))
 
   if (!all.equal(sys$stoich,t(sys$Post-sys$Pre))) warning("sys$stoich!=t(sys$Post-sys$Pre))")
+}
+
+
+#' A convenience function to create an sir model
+#'
+#' @param X an optional numeric vector of length 3 that determines the initial number of susceptible, infectious, and recovered individiuals
+#' @param theta an optional numberic vector of length 2 that determines the parameter controlling the rate at which individuals become infected and how quickly they recover
+#' @return an sir system
+#' @author Jarad Niemi \email{niemi@@iastate.edu}
+#' @export sir
+sir = function(X=c(1000,10,0),theta=c(0.5,0.25)) {
+  stopifnot(length(X)==3, length(theta)==2)
+
+  Pre  = rbind(c(1,1,0), c(0,1,0))
+  Post = rbind(c(0,2,0), c(0,0,1))
+  stoich = t(Post-Pre)
+  mult = c(1/sum(X), 1)
+ 
+  sys = list(r=2,s=3,Pre=Pre,Post=Post,stoich=stoich,theta=theta,X=X,mult=mult)
+  check.system(sys)
+ 
+  return(sys)
 }
 
 

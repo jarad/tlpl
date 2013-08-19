@@ -7,7 +7,9 @@
     while.max = 1000, ...)
 }
 \arguments{
-  \item{data}{a list with elements y and tau}
+  \item{data}{a list with elements y, matrix with n rows
+  representing time points, and tau, either length n vector
+  or a scalar.}
 
   \item{sckm}{a list with a bunch of elements}
 

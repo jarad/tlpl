@@ -13,7 +13,7 @@ sckm$stoich = t(sckm$Post-sckm$Pre)
 sckm$X = c(16000,100,0)
 N = sum(sckm$X)
 sckm$theta = c(0.5,0.25)
-sckm$lmult = log(c(1/N,1))
+sckm$mult = c(1/N,1)
 
 ## Simulate data
 set.seed(2)
@@ -23,8 +23,8 @@ n = 50
 tl = tau_leap(sckm, n)
 
 ### Sample transitions
-p = c(0.05,0.0001) # Sample probabilities for S->I and I->R respectively
-y = rbind(rbinom(n, tl$nr[,1], p[1]), rbinom(n, tl$nr[,2], p[2]))
+p = c(0.75,0.25) # Sample probabilities for S->I and I->R respectively
+y = cbind(rbinom(n, tl$nr[,1], p[1]), rbinom(n, tl$nr[,2], p[2]))
 
 
 clrs = c("seagreen","red","blue")
@@ -38,16 +38,16 @@ legend("topright", c("S","I","R"), col=clrs, lwd=ld)
 
 
 
-plot( y[1,], type="p", pch=19, ylim=range(y), lwd=ld, col=clrs[2], 
+plot( y[,1], type="p", pch=19, ylim=range(y), lwd=ld, col=clrs[2], 
       xlab="Time", ylab="Number", main="Observations")
-points(y[2,], lwd=ld, col=clrs[3], pch=19)
+points(y[,2], lwd=ld, col=clrs[3], pch=19)
 legend("topright", c("S->I","I->R"), col=clrs[2:3], lwd=ld)
 
 ### Cumulative transitions
-y2 = t(apply(y,1,cumsum))
-plot( y2[1,], type="l", ylim=range(y2), lwd=ld, col=clrs[2], 
+y2 = apply(y,2,cumsum)
+plot( y2[,1], type="l", ylim=range(y2), lwd=ld, col=clrs[2], 
       xlab="Time", ylab="Number", main="Cumulative Observations")
-lines(y2[2,], lwd=ld, col=clrs[3])
+lines(y2[,2], lwd=ld, col=clrs[3])
 legend("topleft", c("S->I","I->R"), col=clrs[2:3], lwd=ld)
 
 if (plots) dev.copy2pdf(file="example2-data.pdf")
@@ -57,8 +57,8 @@ if (ask) readline("Hit <enter> to continue:")
 
 # Perform inference
 cat("\nRunning sequential inference...\n")
-prior = tlpl_prior(sckm$X, 10*p, 10*(1-p), sckm$theta*10, 10, sckm$r)
-z = tlpl(list(y=y, tau=1), sckm, prior=prior, n.particles=1e4, engine="C", verbose=1)
+prior = tlpl_prior(sckm$X, 100*p, 100*(1-p), sckm$theta*100, 100, sckm$r)
+z = tlpl(list(y=y, tau=1), sckm, prior=prior, n.particles=1e3, engine="R", verbose=1)
 
 cat("\nCalculating quantiles...\n")
 qs = tlpl_quantile(z)
