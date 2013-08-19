@@ -1,10 +1,10 @@
 # R files
-.Rhistory
-.RData
+*.Rhistory
+*.RData
 
 # Object files
-.o
-.so
+*.o
+*.so
 
 # Example code in package build process
 *-Ex.R
