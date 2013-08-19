@@ -51,7 +51,7 @@ legend("topright", c("S->E","E->I","I->R"), col=clrs[2:4], lwd=ld)
 
 
 ### Cumulative transitions
-y2 = t(apply(y,1,cumsum))
+y2 = apply(y,2,cumsum)
 plot( y2[,1], type="l", ylim=range(y2), lwd=ld, col=clrs[2], 
       xlab="Time", ylab="Number", main="Cumulative Observations")
 lines(y2[,2], lwd=ld, col=clrs[3])
