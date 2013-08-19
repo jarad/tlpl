@@ -98,13 +98,20 @@ check.system = function(sys) {
 }
 
 
-#' A convenience function to create an sir model
+
+#' A convenience function to create a variety of stochastic chemical kinetic models.
 #'
+#' @param system a character string indicating the type of system to create, currently implemented models are sir
 #' @param X an optional numeric vector of length 3 that determines the initial number of susceptible, infectious, and recovered individiuals
 #' @param theta an optional numberic vector of length 2 that determines the parameter controlling the rate at which individuals become infected and how quickly they recover
-#' @return an sir system
+#' @return an sckm system
 #' @author Jarad Niemi \email{niemi@@iastate.edu}
-#' @export sir
+#' @export sckm
+sckm = function(system, ...) {
+  do.call(system, list(...))
+}
+
+
 sir = function(X=c(1000,10,0),theta=c(0.5,0.25)) {
   stopifnot(length(X)==3, length(theta)==2)
 

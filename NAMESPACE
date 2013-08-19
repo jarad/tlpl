@@ -1,5 +1,5 @@
 export(hazard)
-export(sir)
+export(sckm)
 export(tau_leap)
 export(tlpl_predict)
 export(tlpl_prior)
