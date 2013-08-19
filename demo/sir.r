@@ -3,27 +3,17 @@ ask   = FALSE
 
 # Generate data
 ## Set up SIR model
-sckm = list()
-sckm$s = 3 # species (S,I,R)
-sckm$r = 2 # reactions (S->I, I->R)
-#                   S -> I    I -> R
-sckm$Pre  = rbind( c(1,1,0), c(0,1,0))
-sckm$Post = rbind( c(0,2,0), c(0,0,1))
-sckm$stoich = t(sckm$Post-sckm$Pre)
-sckm$X = c(16000,100,0)
-N = sum(sckm$X)
-sckm$theta = c(0.5,0.25)
-sckm$mult = c(1/N,1)
 
 ## Simulate data
 set.seed(2)
+sckm = sir(X=c(16000, 100, 0), theta=c(.5,.25))
 n = 50
 
 ### True states and transitions
 tl = tau_leap(sckm, n)
 
 ### Sample transitions
-p = c(0.75,0.25) # Sample probabilities for S->I and I->R respectively
+p = c(0.75,0.5) # Sample probabilities for S->I and I->R respectively
 y = cbind(rbinom(n, tl$nr[,1], p[1]), rbinom(n, tl$nr[,2], p[2]))
 
 
@@ -52,7 +42,6 @@ legend("topleft", c("S->I","I->R"), col=clrs[2:3], lwd=ld)
 
 if (plots) dev.copy2pdf(file="example2-data.pdf")
 
-if (ask) readline("Hit <enter> to continue:")
 
 
 # Perform inference
@@ -67,6 +56,8 @@ qs = tlpl_quantile(z)
 ld = 2
 clrs = c("green","red","blue")
 
+
+if (ask) readline("Hit <enter> to continue:")
 
 ## States
 xx = 0:n
@@ -134,7 +125,7 @@ if (plots) dev.copy2pdf(file="example2-parameters.pdf")
 
 # Predictions
 tt = 18
-np = 1000
+np = 100
 z2 = list(X = z$X[,1:np,tt])
 z2$hyper = list()
 z2$hyper$rate = list(a = z$hyper$rate$a[,1:np,tt], 
@@ -147,6 +138,9 @@ z3 = tlpl_predict(sckm, n-tt, z2, verbose=1)
 Xq = tlpl_quantile(z3, which="x")
 yq = tlpl_quantile(list(X=z3$y), which="x")
 
+
+
+if (ask) readline("Hit <enter> to continue:")
 
 
 ## States
