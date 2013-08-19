@@ -195,7 +195,7 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
           any.negative = 0
         }
 
-        if (any.negative && verbose) 
+        if (any.negative && verbose>3) 
         {
           cat(paste("Particle",kk,"failed.\n"))
           cat("Probabilities: ")
