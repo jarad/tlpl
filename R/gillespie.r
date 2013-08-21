@@ -163,7 +163,7 @@ tau_leap_one_step = function(sys, tau=1, while.max=1000, engine="R")
 #' @export tau_leap
 #' @useDynLib tlpl
 #'
-tau_leap = function(sys, n=1, tau=1, while.max=1000, engine="R")
+tau_leap = function(sys, n=1, tau=1, while.max=1000, engine="C")
 {
     engine = pmatch(engine, c("R","C"))
    

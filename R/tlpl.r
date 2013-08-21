@@ -49,7 +49,7 @@ tlpl_prior = function(X, p.a, p.b, r.a, r.b, nr)
 #' @useDynLib tlpl
 #'
 tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL, 
-        engine="R", verbose=0, while.max=1000, ...)
+        engine="C", verbose=0, while.max=1000, ...)
 {
   nr = sckm$r
   ns = sckm$s 
