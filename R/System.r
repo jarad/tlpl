@@ -101,28 +101,63 @@ check.system = function(sys) {
 
 #' A convenience function to create a variety of stochastic chemical kinetic models.
 #'
-#' @param system a character string indicating the type of system to create, currently implemented models are sir
+#' @param system a character string indicating the type of system to create, currently implemented models are sir and seir
 #' @param ... other parameters sent on to the system construction, e.g. the state of the system X and the rate parameters theta
 #' @return an sckm system
 #' @author Jarad Niemi \email{niemi@@iastate.edu}
 #' @export sckm
 sckm = function(system, ...) {
-  do.call(system, list(...))
+  do.call(tolower(system), list(...))
 }
 
 
 sir = function(X=c(1000,10,0),theta=c(0.5,0.25)) {
-  stopifnot(length(X)==3, length(theta)==2)
+  # SIR model:
+  # rxn 1: S + I -> 2I
+  # rxn 2:     I -> R
 
-  Pre  = rbind(c(1,1,0), c(0,1,0))
-  Post = rbind(c(0,2,0), c(0,0,1))
+               # S I R
+  Pre  = rbind(c(1,1,0), # S + I 
+               c(0,1,0)) # I
+
+               # S I R
+  Post = rbind(c(0,2,0), # 2I
+               c(0,0,1)) # R
   stoich = t(Post-Pre)
-  mult = c(1/sum(X), 1)
- 
-  sys = list(r=2,s=3,Pre=Pre,Post=Post,stoich=stoich,theta=theta,X=X,mult=mult)
+  mult = c(1/sum(X), 1) 
+  states = c("S","I","R")
+  reactions = c("S+I->2I","I->R")
+
+  sys = list(r=2, s=3, Pre=Pre, Post=Post, stoich=stoich, theta=theta, X=X, mult=mult, states=states, reactions=reactions)
   check.system(sys)
  
   return(sys)
 }
 
+seir = function(X=c(1000,0,10,0), theta=c(.5,.25,.25)) {
+  # SEIR model:
+  # rxn 1: S + I -> E + I
+  # rxn 2:     E -> I
+  # rxn 3:     I -> R
+
+              # S E I R
+  Pre  = rbind(c(1,0,1,0), # S + I
+               c(0,1,0,0), # E 
+               c(0,0,1,0)) # I
+ 
+  Post = rbind(c(0,1,1,0), # E + I
+               c(0,0,1,0), # I
+               c(0,0,0,1)) # R
+
+  stoich = t(Post-Pre)
+  mult = c(1/sum(X), 1, 1)
+  states = c("S","E","I","R")
+  reactions = c("S+I->E+I","E->I","I->R")
+
+  sys = list(r=3, s=4, Pre=Pre, Post=Post, stoich=stoich, theta=theta, X=X, mult=mult, states=states, reactions=reactions)
+  check.system(sys)
+
+  return(sys)
+}
+       
 
