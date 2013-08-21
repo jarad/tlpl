@@ -21,6 +21,7 @@ void hazard_part_R(int *nSpecies, int *nRxns, int *anPre, int *anPost, double *a
 int hazard_part(Sckm *sckm, const int *anX, double *adHazardPart)
 {
   int i, j, k, ns=sckm->s, nr=sckm->r;
+
   for (i=0; i<nr; i++) 
   {
     adHazardPart[i] = sckm->lMult[i];
@@ -30,7 +31,8 @@ int hazard_part(Sckm *sckm, const int *anX, double *adHazardPart)
       adHazardPart[i] += lchoose(anX[j], sckm->Pre[k]); 
     }    
       adHazardPart[i] = exp(adHazardPart[i]);
-  }  
+  } 
+
   return 0;     
 }
 
@@ -55,6 +57,7 @@ int hazard(Sckm *sckm, const double *adTheta, const int *anX, double dTau,
   {
     adHazard[i] = adTheta[i]*adHazardPart[i]*dTau;
   }
+
   return 0;
 }
 
@@ -73,7 +76,7 @@ int update_species(Sckm *sckm, const int *anRxnCount, int *anX)              // 
   int i,j, nSpecies=sckm->s;
   for (i=0; i<nSpecies; i++) 
   {
-    for (j=0; j< (sckm->r); j++) 
+    for (j=0; j< (sckm->r); j++)
     {
       anX[i] += sckm->Stoich[nSpecies*j+i]*anRxnCount[j];
     }    

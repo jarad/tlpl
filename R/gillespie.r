@@ -13,6 +13,7 @@ hazard.part = function(sys, engine="R")
         # R implementation
         hp = numeric(sys$r)
         for (i in 1:sys$r) hp[i] = sum(lchoose(sys$X, sys$Pre[i,]))+sys$lmult[i]
+cat(hp)
         return(exp(hp))
     },
     {
