@@ -57,7 +57,7 @@ exp.inf = observed/p.stoi
 # expected I->R rate
 # www.cdc.gov/vaccines/pubs/pinkbook/downloads/meas.pdf
 # 'Rash onset 2-4 days after prodrome'
-# 'Measles virus is shed from the nasopharynx beginning with the prodrome until 3–4 days after rash onset. '
+# 'Measles virus is shed from the nasopharynx beginning with the prodrome until 3-4 days after rash onset. '
 
 r.itor = 1 # virus shedding lasts for approximately one week 
 m.r.itor = 50

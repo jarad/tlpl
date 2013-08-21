@@ -102,8 +102,7 @@ check.system = function(sys) {
 #' A convenience function to create a variety of stochastic chemical kinetic models.
 #'
 #' @param system a character string indicating the type of system to create, currently implemented models are sir
-#' @param X an optional numeric vector of length 3 that determines the initial number of susceptible, infectious, and recovered individiuals
-#' @param theta an optional numberic vector of length 2 that determines the parameter controlling the rate at which individuals become infected and how quickly they recover
+#' @param ... other parameters sent on to the system construction, e.g. the state of the system X and the rate parameters theta
 #' @return an sckm system
 #' @author Jarad Niemi \email{niemi@@iastate.edu}
 #' @export sckm

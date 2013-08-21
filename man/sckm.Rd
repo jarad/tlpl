@@ -8,13 +8,9 @@
   \item{system}{a character string indicating the type of
   system to create, currently implemented models are sir}
 
-  \item{X}{an optional numeric vector of length 3 that
-  determines the initial number of susceptible, infectious,
-  and recovered individiuals}
-
-  \item{theta}{an optional numberic vector of length 2 that
-  determines the parameter controlling the rate at which
-  individuals become infected and how quickly they recover}
+  \item{...}{other parameters sent on to the system
+  construction, e.g. the state of the system X and the rate
+  parameters theta}
 }
 \value{
   an sckm system
