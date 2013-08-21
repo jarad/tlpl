@@ -3,7 +3,7 @@
 \title{Performs tau-leaped simulations}
 \usage{
   tau_leap(sys, n = 1, tau = 1, while.max = 1000,
-    engine = "R")
+    engine = "C")
 }
 \arguments{
   \item{sys}{a list defining a stochastic chemical kinetic
