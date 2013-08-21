@@ -6,7 +6,8 @@
 }
 \arguments{
   \item{system}{a character string indicating the type of
-  system to create, currently implemented models are sir}
+  system to create, currently implemented models are sir
+  and seir}
 
   \item{...}{other parameters sent on to the system
   construction, e.g. the state of the system X and the rate
