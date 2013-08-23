@@ -13,7 +13,7 @@ n = 50
 tl = tau_leap(sckm, n)
 
 ### Sample transitions
-p = c(0.75,0.5) # Sample probabilities for S->I and I->R respectively
+p = c(0.99,0.99) # Sample probabilities for S->I and I->R respectively
 y = cbind(rbinom(n, tl$nr[,1], p[1]), rbinom(n, tl$nr[,2], p[2]))
 
 
@@ -46,13 +46,13 @@ if (plots) dev.copy2pdf(file="example2-data.pdf")
 
 # Perform inference
 cat("\nRunning sequential inference...\n")
-np = 1e3
+np = 1e4
 
 Xprior = matrix(0, sckm$s, np)
 Xprior[1,] = rbinom(np, sum(sckm$X), sckm$X[1]/sum(sckm$X))
 Xprior[2,] = sum(sckm$X) - Xprior[1,]
 
-prior = tlpl_prior(Xprior , 100*p, 100*(1-p), sckm$theta*100, 100, sckm$r)
+prior = tlpl_prior(Xprior, 100*p, 100*(1-p), sckm$theta*1, 1, sckm$r)
 z = tlpl(list(y=y, tau=1), sckm, prior=prior, n.particles=np, engine="R", verbose=1)
 
 cat("\nCalculating quantiles...\n")
@@ -76,7 +76,7 @@ lines(xx, qs$X[1,3,])
 lines(xx, tl$X[,1], col="red", lwd=2)
 
 ### Infecteds
-plot( xx, qs$X[2,1,], type="l", ylim=c(0, max(sckm$X)), main="Infected", ylab="Count", xlab="Time")
+plot( xx, qs$X[2,1,], type="l", ylim=c(0, max(sckm$X)), main="Infectious", ylab="Count", xlab="Time")
 lines(xx, qs$X[2,2,], lwd=2)
 lines(xx, qs$X[2,3,])
 lines(xx, tl$X[,2], col="red", lwd=2)
@@ -98,8 +98,7 @@ if (ask) readline("Hit <enter> to continue:")
 par(mfrow=c(2,2))
 
 ### S->I probability
-plot( xx, qs$p[1,1,], type="l", ylim=range(qs$p[1,,]), 
-      main="S -> I", ylab="Probability", xlab="Time")
+plot( xx, qs$p[1,1,], type="l", ylim=range(qs$p[1,,]), main="S -> I", ylab="Probability", xlab="Time")
 lines(xx, qs$p[1,2,], lwd=2)
 lines(xx, qs$p[1,3,])
 abline(h=p[1], col="red", lwd=2)
@@ -130,8 +129,8 @@ if (plots) dev.copy2pdf(file="example2-parameters.pdf")
 
 
 # Predictions
-tt = 18
-np = 100
+tt = 18; tt=40
+#np = 100
 z2 = list(X = z$X[,1:np,tt])
 z2$hyper = list()
 z2$hyper$rate = list(a = z$hyper$rate$a[,1:np,tt], 
@@ -188,7 +187,7 @@ lines(x2, Xq$X.quantiles[3,3,], col="blue")
 
 lines(xx, tl$X[,3], col="red", lwd=2)
 
-if (plots) dev.copy2pdf(file="example2-prediction")
+if (plots) dev.copy2pdf(file="example2-prediction.pdf")
 
 
 

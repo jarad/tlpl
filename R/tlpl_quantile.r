@@ -1,5 +1,5 @@
 # Calculates the quantiles for a mixture of beta distributions
-mix.betaq = function(a,b,probs,w=1)
+qbetamix = function(a,b,probs,w=1)
 {
   n = length(a)
   p = length(probs)
@@ -15,8 +15,8 @@ mix.betaq = function(a,b,probs,w=1)
   return(q)
 }
 
-# Calculates the quantiles for a mixture of beta distributions
-mix.gammaq = function(a,b,probs,w=1)
+# Calculates the quantiles for a mixture of gamma distributions
+qgammamix = function(a,b,probs,w=1)
 {
   n = length(a)
   p = length(probs)
@@ -69,12 +69,12 @@ tlpl_quantile = function(tlpl, probs=c(.025,.5,.975), which="xpr", verbose=1)
 
     if (do$p) 
     {
-      for (j in 1:r) pq[j,,i] = mix.betaq( tlpl$hyper$prob$a[j,,i], tlpl$hyper$prob$b[j,,i], probs)
+      for (j in 1:r) pq[j,,i] = qbetamix( tlpl$hyper$prob$a[j,,i], tlpl$hyper$prob$b[j,,i], probs)
     }
         
     if (do$r)
     {
-      for (j in 1:r) rq[j,,i] = mix.gammaq(tlpl$hyper$rate$a[j,,i], tlpl$hyper$rate$b[j,,i], probs)
+      for (j in 1:r) rq[j,,i] = qgammamix(tlpl$hyper$rate$a[j,,i], tlpl$hyper$rate$b[j,,i], probs)
     }
   }
 
