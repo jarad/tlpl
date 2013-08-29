@@ -2,7 +2,7 @@
 \alias{tlpl_predict}
 \title{Produces simulations of data based on a current tlpl filtered distribution}
 \usage{
-  tlpl_predict(sckm, n, tlpl, engine = "R", verbose)
+  tlpl_predict(sckm, n, tlpl, engine = "C", verbose)
 }
 \arguments{
   \item{sckm}{a list defining a stochastic chemical kinetic
@@ -13,8 +13,7 @@
 
   \item{tlpl}{a list defining a filtered distribution}
 
-  \item{engine}{use 'R' or 'C' code (only R currently
-  implemented)}
+  \item{engine}{use 'R' or 'C' code}
 
   \item{verbose}{level of verbosity curing calculations}
 }
