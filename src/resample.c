@@ -231,6 +231,9 @@ int resample(int nW, double *adWeights, int nI, int *anIndices,
     default:
       REprintf("C: resample: no match for resampling function\n");
   }
+
+  for (int i=0; i<nW; i++) adWeights[i] = 1.0 / nW;
+
   return NO_FXN_ERROR;
 }
 
