@@ -4,6 +4,11 @@
 #include "utility.h"
 #include "resample.h"
 
+#define NONE 1
+#define ESS 2
+#define COV 3
+#define ENTROPY 4
+
 #define STRATIFIED_RESAMPLING 1
 #define MULTINOMIAL_RESAMPLING 2
 #define SYSTEMATIC_RESAMPLING 3
@@ -177,16 +182,16 @@ int doResample(int n, double *weights, int nNonuniformity, double dThreshold)
 {
   switch(nNonuniformity)
   {
-    case 1: // "none" means always resample
+    case NONE: // "none" means always resample
       return 1;
-    case 2: 
+    case ESS: 
       return ess(    n, weights) < dThreshold ? 1 : 0;
-    case 3: 
+    case COV: 
       return cov2(   n, weights) > dThreshold ? 1 : 0; // notice the greater than sign
-    case 4: 
+    case ENTROPY: 
       return entropy(n, weights) < dThreshold ? 1 : 0;
     default:
-      error("Nonuniformity measure not found.\n");
+      error("C: doResample: Nonuniformity measure not found.\n");
   }
   error("doResample exited switch without a proper response");
   return -1;
@@ -270,9 +275,9 @@ int systematic_resample(int nW, double *adWeights, int nI, int *anIndices)
   int i;
   double adUniforms[nI];
   GetRNGstate();
-  adUniforms[0] = runif(0, (float) 1/ nI);
+  adUniforms[0] = runif(0, (float) 1.0 / nI);
   PutRNGstate();
-  for (i=1; i<nI; i++) adUniforms[i] =  adUniforms[i-1]+ (float) 1 / nI;
+  for (i=1; i<nI; i++) adUniforms[i] =  adUniforms[i-1] + (float) 1.0 / nI;
 
   inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, SORTED);
 
