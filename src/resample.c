@@ -19,6 +19,9 @@
 #define NOT_SORTED 0
 #define SORTED 1
 
+#define NO_FXN_ERROR 0
+#define FXN_ERROR 1
+
 
 /***********************************************************************/
 /* Utility functions                                                   */
@@ -54,7 +57,7 @@ int cumulative_sum(int n, double *v)
 {
   int i;
   for (i=1; i<n; i++) v[i] += v[i-1];
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
@@ -80,10 +83,8 @@ int rep2id(int *rep, int sum, int *id)
     }
   }
 
-  return 0;
+  return NO_FXN_ERROR;
 }
-
-
 
 
 
@@ -120,7 +121,7 @@ int inverse_cdf_weights(int nW,
     anIndices[i] = j;
   } 
 
-  return 0;   
+  return NO_FXN_ERROR;   
 }
 
 
@@ -194,7 +195,7 @@ int doResample(int n, double *weights, int nNonuniformity, double dThreshold)
       error("C: doResample: Nonuniformity measure not found.\n");
   }
   error("doResample exited switch without a proper response");
-  return -1;
+  return FXN_ERROR;
 }
 
 
@@ -228,7 +229,7 @@ int resample(int nW, double *adWeights, int nI, int *anIndices,
     default:
       REprintf("C: resample: no match for resampling function\n");
   }
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
@@ -244,7 +245,7 @@ int stratified_resample(int nW, double *adWeights, int nI, int *anIndices)
 
   inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, SORTED);
 
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
@@ -261,7 +262,7 @@ int multinomial_resample(int nW, double *adWeights, int nI, int *anIndices)
 
   inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, NOT_SORTED);
 
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
@@ -281,11 +282,8 @@ int systematic_resample(int nW, double *adWeights, int nI, int *anIndices)
 
   inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, SORTED);
 
-  return 0;
+  return NO_FXN_ERROR;
 }
-
-
-
 
 
 
@@ -338,7 +336,7 @@ int residual_resample(int nW, double *adWeights, int nI, int *anIndices,
       REprintf("C: residual_resample: no match for residual resampling function\n");
   }
        
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
