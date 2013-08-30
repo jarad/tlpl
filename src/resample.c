@@ -4,6 +4,23 @@
 #include "utility.h"
 #include "resample.h"
 
+#define NONE 1
+#define ESS 2
+#define COV 3
+#define ENTROPY 4
+
+#define STRATIFIED_RESAMPLING 1
+#define MULTINOMIAL_RESAMPLING 2
+#define SYSTEMATIC_RESAMPLING 3
+#define RESIDUAL_RESAMPLING_THEN_STRATIFIED 4
+#define RESIDUAL_RESAMPLING_THEN_MULTINOMIAL 5
+#define RESIDUAL_RESAMPLING_THEN_SYSTEMATIC 6
+
+#define NOT_SORTED 0
+#define SORTED 1
+
+#define NO_FXN_ERROR 0
+#define FXN_ERROR 1
 
 
 /***********************************************************************/
@@ -35,39 +52,15 @@ int compare_doubles (const void *X, const void *Y)
 }
 
 
-void is_increasing_R(int *n, const double *v, int *returned) 
-{
-  *returned = is_increasing(*n, v); 
-}
-
-int is_increasing(int n, const double *v) 
-{
-  int i; 
-  for (i=1; i<n; i++)
-  {
-    if (v[i]<v[i-1]) return 0;
-  }
-  return 1;
-}
-
-
-void cumulative_sum_R(int *n, double *v) 
-{
-  cumulative_sum(*n, v);
-}
 
 int cumulative_sum(int n, double *v) 
 {
   int i;
   for (i=1; i<n; i++) v[i] += v[i-1];
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
-void rep2id_R(int *rep, int *sum, int *id) 
-{
-  rep2id(rep, *sum, id);
-}
 
 int rep2id(int *rep, int sum, int *id)
 {
@@ -90,26 +83,25 @@ int rep2id(int *rep, int sum, int *id)
     }
   }
 
-  return 0;
+  return NO_FXN_ERROR;
 }
 
-
-void inverse_cdf_weights_R(int *nW, double *adWeights, int *nU, double *adUniforms, int *anIndices)
-{
-  inverse_cdf_weights(*nW, adWeights, *nU, adUniforms, anIndices);
-}
 
 
 int inverse_cdf_weights(int nW, 
-                         double *adWeights, 
-                         int nU, 
-                         double *adUniforms,
-                         int *anIndices)
+                        const double *adWeights, 
+                        int nU, 
+                        double *adUniforms,
+                        int *anIndices,
+                        int isSorted)
 {
-  if (!is_increasing(nU, adUniforms))    
+  if (!isSorted) 
     qsort(adUniforms, nU, sizeof(double), compare_doubles);
 
-  cumulative_sum(nW, adWeights);
+  double * adCumSum = malloc(nW * sizeof(double));
+  memcpy(adCumSum, adWeights, nW * sizeof(double));
+
+  cumulative_sum(nW, adCumSum);
 
   int i, j=0, found;
   for (i=0; i<nU; i++) 
@@ -117,7 +109,7 @@ int inverse_cdf_weights(int nW,
     found=0;
     while (!found) 
     {
-      if (adUniforms[i] > adWeights[j])
+      if (adUniforms[i] > adCumSum[j])
       {
         j++;
       }
@@ -129,7 +121,9 @@ int inverse_cdf_weights(int nW,
     anIndices[i] = j;
   } 
 
-  return 0;   
+  free(adCumSum);
+
+  return NO_FXN_ERROR;   
 }
 
 
@@ -138,11 +132,7 @@ int inverse_cdf_weights(int nW,
 /***********************************************************************/
 
 
-// Effective sample size
-void ess_R(int *n, double *weights, double *returned)
-{
-  *returned = ess(*n, weights);
-}
+
 
 double ess(int n, double *weights)
 {
@@ -153,11 +143,7 @@ double ess(int n, double *weights)
 }
 
 
-// Coefficient of variation squared
-void cov2_R(int *n, double *weights, double *returned)
-{
-  *returned = cov2(*n, weights);
-}
+
 
 double cov2(int n, double *weights) 
 {
@@ -183,9 +169,7 @@ double cov2(int n, double *weights)
 
 
 
-void entropy_R(int *n, double *weights, double *returned) {
-  *returned = entropy(*n, weights);
-}
+
 
 double entropy(int n, double *weights)
 {
@@ -201,19 +185,19 @@ int doResample(int n, double *weights, int nNonuniformity, double dThreshold)
 {
   switch(nNonuniformity)
   {
-    case 1: // "none" means always resample
+    case NONE: // "none" means always resample
       return 1;
-    case 2: 
+    case ESS: 
       return ess(    n, weights) < dThreshold ? 1 : 0;
-    case 3: 
+    case COV: 
       return cov2(   n, weights) > dThreshold ? 1 : 0; // notice the greater than sign
-    case 4: 
+    case ENTROPY: 
       return entropy(n, weights) < dThreshold ? 1 : 0;
     default:
-      error("Nonuniformity measure not found.\n");
+      error("C: doResample: Nonuniformity measure not found.\n");
   }
   error("doResample exited switch without a proper response");
-  return -1;
+  return FXN_ERROR;
 }
 
 
@@ -221,43 +205,33 @@ int doResample(int n, double *weights, int nNonuniformity, double dThreshold)
 /* Resampling functions                                                */
 /***********************************************************************/
 
-void resample_R(int *nW, double *adWeights, int *nI, int *anIndices,
-                   int *nResamplingFunction)
-{
-  resample(*nW, adWeights, *nI, anIndices, *nResamplingFunction);
-}
-
 int resample(int nW, double *adWeights, int nI, int *anIndices, 
              int nResamplingFunction)
 {
   switch(nResamplingFunction)
   {
-    case 1:
+    case STRATIFIED_RESAMPLING:
       stratified_resample(nW, adWeights, nI, anIndices);
       break;
-    case 2:
+    case MULTINOMIAL_RESAMPLING:
       multinomial_resample(nW, adWeights, nI, anIndices);
       break;
-    case 3:
+    case SYSTEMATIC_RESAMPLING:
       systematic_resample(nW, adWeights, nI, anIndices);
       break;
-    case 4: // stratified on residual
-      residual_resample(nW, adWeights, nI, anIndices, 1);
+    case RESIDUAL_RESAMPLING_THEN_STRATIFIED:
+      residual_resample(nW, adWeights, nI, anIndices, STRATIFIED_RESAMPLING);
       break;
-    case 5: // multinomial on residual
-      residual_resample(nW, adWeights, nI, anIndices, 2);
+    case RESIDUAL_RESAMPLING_THEN_MULTINOMIAL: 
+      residual_resample(nW, adWeights, nI, anIndices, MULTINOMIAL_RESAMPLING);
       break;
-    case 6: // systematic on residual
-      residual_resample(nW, adWeights, nI, anIndices, 3);
+    case RESIDUAL_RESAMPLING_THEN_SYSTEMATIC : 
+      residual_resample(nW, adWeights, nI, anIndices, SYSTEMATIC_RESAMPLING);
       break;
+    default:
+      REprintf("C: resample: no match for resampling function\n");
   }
-  return 0;
-}
-
-
-void stratified_resample_R(int *nW, double *adWeights, int *nI, int *anIndices)
-{
-  stratified_resample(*nW, adWeights, *nI, anIndices);
+  return NO_FXN_ERROR;
 }
 
 
@@ -271,17 +245,13 @@ int stratified_resample(int nW, double *adWeights, int nI, int *anIndices)
   for (i=0;i<nI;i++) adUniforms[i] = runif((double) i/nI, (double) (i+1)/nI);
   PutRNGstate();
 
-  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices);
+  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, SORTED);
 
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
 
-void multinomial_resample_R( int *nW, double *adWeights, int *nI, int *anIndices)
-{
-  multinomial_resample(*nW, adWeights, *nI, anIndices);
-}
 
 int multinomial_resample(int nW, double *adWeights, int nI, int *anIndices) 
 {
@@ -292,20 +262,15 @@ int multinomial_resample(int nW, double *adWeights, int nI, int *anIndices)
   for (i=0; i<nI; i++) adUniforms[i] = runif(0,1);
   PutRNGstate();
 
-  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices);
+  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, NOT_SORTED);
 
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
 
 
 
-
-void systematic_resample_R(int *nW, double *adWeights, int *nI, int *anIndices)
-{
-  systematic_resample(*nW, adWeights, *nI, anIndices);
-}
 
 
 int systematic_resample(int nW, double *adWeights, int nI, int *anIndices)
@@ -313,24 +278,16 @@ int systematic_resample(int nW, double *adWeights, int nI, int *anIndices)
   int i;
   double adUniforms[nI];
   GetRNGstate();
-  adUniforms[0] = runif(0, (float) 1/ nI);
+  adUniforms[0] = runif(0, (float) 1.0 / nI);
   PutRNGstate();
-  for (i=1; i<nI; i++) adUniforms[i] =  adUniforms[i-1]+ (float) 1 / nI;
+  for (i=1; i<nI; i++) adUniforms[i] =  adUniforms[i-1] + (float) 1.0 / nI;
 
-  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices);
+  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, SORTED);
 
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 
-
-
-
-void residual_resample_R(int *nW, double *adWeights, int *nI, int *anIndices, 
-                            int *nResidualResampleFunction)
-{
-  residual_resample(*nW, adWeights, *nI, anIndices, *nResidualResampleFunction);
-}
 
 int residual_resample(int nW, double *adWeights, int nI, int *anIndices,
                        int nResidualResampleFunction)
@@ -368,20 +325,20 @@ int residual_resample(int nW, double *adWeights, int nI, int *anIndices,
 
   switch (nResidualResampleFunction) 
   {
-    case 1:
+    case STRATIFIED_RESAMPLING:
       stratified_resample( nW, adWeights, nI, &anIndices[nDeterministicReps]);
       break;
-    case 2:
+    case MULTINOMIAL_RESAMPLING:
       multinomial_resample(nW, adWeights, nI, &anIndices[nDeterministicReps]);
       break;
-    case 3:
+    case SYSTEMATIC_RESAMPLING:
       systematic_resample( nW, adWeights, nI, &anIndices[nDeterministicReps]);
       break;
     default:
       REprintf("C: residual_resample: no match for residual resampling function\n");
   }
        
-  return 0;
+  return NO_FXN_ERROR;
 }
 
 

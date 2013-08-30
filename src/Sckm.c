@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -32,8 +31,7 @@ Sckm *newSckm(const int s, const int r, int *Pre, int *Post, double *lMult)
 
 void deleteSckm(Sckm *sckm)
 {
-    assert(sckm);
-    assert(sckm->Stoich); free(sckm->Stoich);
+    free(sckm->Stoich);
     free(sckm);
 }
 

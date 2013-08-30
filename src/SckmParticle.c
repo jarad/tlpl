@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -57,14 +56,13 @@ void setSckmParticle(SckmParticle *particle,
 
 void deleteSckmParticle(SckmParticle *particle)
 {
-    assert(particle);
-    assert(particle->state); free(particle->state);
-    assert(particle->probA); free(particle->probA);
-    assert(particle->probB); free(particle->probB);
-    assert(particle->rateA); free(particle->rateA);
-    assert(particle->rateB); free(particle->rateB);
-    assert(particle->prob ); free(particle->prob );
-    assert(particle->rate ); free(particle->rate );
+    free(particle->state);
+    free(particle->probA);
+    free(particle->probB);
+    free(particle->rateA);
+    free(particle->rateB);
+    free(particle->prob );
+    free(particle->rate );
     free(particle);
 }
 

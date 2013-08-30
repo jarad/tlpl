@@ -2,7 +2,6 @@
 * Functions for particle learning in discrete-time stochastic chemical kinetic models
 */
 
-#include <assert.h>
 #include <R.h>
 #include <Rmath.h>
 #include "utility.h"
@@ -330,10 +329,10 @@ int tlpl(int nObs, int *anY, double *adTau,
       // Update sufficient statistics
       for (l=0; l<nr; l++) 
       {
-        nPart->probA[l] = cPart->probA[l] + cY[l];                      assert(nPart->probA[l]>0);
-        nPart->probB[l] = cPart->probB[l] + anUnobservedTransitions[l]; assert(nPart->probB[l]>0);
-        nPart->rateA[l] = cPart->rateA[l] + anTotalTransitions[l];      assert(nPart->rateA[l]>0);
-        nPart->rateB[l] = cPart->rateB[l] + hp[k*nr+l];                 assert(nPart->rateB[l]>0);
+        nPart->probA[l] = cPart->probA[l] + cY[l];                      
+        nPart->probB[l] = cPart->probB[l] + anUnobservedTransitions[l]; 
+        nPart->rateA[l] = cPart->rateA[l] + anTotalTransitions[l];      
+        nPart->rateB[l] = cPart->rateB[l] + hp[k*nr+l];                 
       }
     } // Updated particles
 
