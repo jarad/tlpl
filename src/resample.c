@@ -86,7 +86,7 @@ int inverse_cdf_weights(int nW,
                         const double *adWeights, 
                         int nU, 
                         double *adUniforms,
-                        int *anIndices
+                        int *anIndices,
                         int isSorted)
 {
   if (!isSorted) 
