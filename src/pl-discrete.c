@@ -40,9 +40,15 @@ double calc_log_pred_like(const int *anY, double dTau, Sckm *sckm, SckmParticle 
 
   double adP2[nr], dLogPredLik=0;
   for (int i=0; i<nr; i++) {
-    adP2[i] = 1/(1+particle->rateB[i]/(particle->prob[i]*adHazardPart[i]*dTau));
+    adP2[i] = 1.0/(1.0+particle->rateB[i]/(particle->prob[i]*adHazardPart[i]*dTau));
     if (adP2[i]>0)
+    {
       dLogPredLik += dnbinom(anY[i], particle->rateA[i], 1-adP2[i], 1);
+    } 
+    else 
+    {
+      if (anY[i]>0) return -INFINITY;
+    }
   }
   return dLogPredLik;
 }
@@ -300,6 +306,17 @@ int tlpl(int nObs, int *anY, double *adTau,
         PutRNGstate();
 
         memcpy(nPart->state, cPart->state, ns*sizeof(double));
+
+        if (nVerbose>2)
+        {
+          Rprintf("Pre- States: ");
+          for (l=0; l<ns; l++)
+          {
+            Rprintf("%d=%d ", l, nPart->state[l]);
+          }
+        }
+
+
         update_species(sckm, anTotalTransitions, nPart->state);
 
         // Check for negative states 
@@ -307,13 +324,12 @@ int tlpl(int nObs, int *anY, double *adTau,
         {
           if (nVerbose>2) 
           {
-            Rprintf("States: ");
-            for (k=0; k<ns; k++) 
+            Rprintf("Post-States: ");
+            for (l=0; l<ns; l++) 
             {
-              Rprintf("%d=%d ", k, nPart->state[k]);
+              Rprintf("%d=%d ", l, nPart->state[l]);
             }
           }
-
 
           nAnyNegative++;
         } else
