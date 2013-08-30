@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -39,7 +38,7 @@ SckmSwarm **newSckmSwarms(Sckm *sckm, int _nParticles, int _nObs,
 void deleteSckmSwarms(SckmSwarm **swarms, int nObs)
 {
     for (int i=0; i<=nObs; i++) deleteSckmSwarm(swarms[i]);
-    assert(swarms); free(swarms);
+    free(swarms);
 }
 
 
@@ -77,11 +76,10 @@ SckmSwarm *newSckmSwarm(Sckm *sckm, int _nParticles,
 
 void deleteSckmSwarm(SckmSwarm *swarm)
 {
-    assert(swarm->adWeights); free(swarm->adWeights); 
-    assert(swarm->pParticle); 
+    free(swarm->adWeights); 
     for (int i=0; i< swarm->nParticles; i++) free(swarm->pParticle[i]);
     free(swarm->pParticle);
-    assert(swarm); free(swarm);
+    free(swarm);
 }
 
 int renormalize(SckmSwarm *swarm)
