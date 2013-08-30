@@ -121,6 +121,8 @@ int inverse_cdf_weights(int nW,
     anIndices[i] = j;
   } 
 
+  free(adCumSum);
+
   return NO_FXN_ERROR;   
 }
 
