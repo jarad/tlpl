@@ -4,7 +4,12 @@
 #include "utility.h"
 #include "resample.h"
 
-
+#define STRATIFIED_RESAMPLING 1
+#define MULTINOMIAL_RESAMPLING 2
+#define SYSTEMATIC_RESAMPLING 3
+#define RESIDUAL_RESAMPLING_THEN_STRATIFIED 4
+#define RESIDUAL_RESAMPLING_THEN_MULTINOMIAL 5
+#define RESIDUAL_RESAMPLING_THEN_SYSTEMATIC 6
 
 /***********************************************************************/
 /* Utility functions                                                   */
@@ -200,23 +205,23 @@ int resample(int nW, double *adWeights, int nI, int *anIndices,
 {
   switch(nResamplingFunction)
   {
-    case 1:
+    case STRATIFIED_RESAMPLING:
       stratified_resample(nW, adWeights, nI, anIndices);
       break;
-    case 2:
+    case MULTINOMIAL_RESAMPLING:
       multinomial_resample(nW, adWeights, nI, anIndices);
       break;
-    case 3:
+    case SYSTEMATIC_RESAMPLING:
       systematic_resample(nW, adWeights, nI, anIndices);
       break;
-    case 4: // stratified on residual
-      residual_resample(nW, adWeights, nI, anIndices, 1);
+    case RESIDUAL_RESAMPLING_THEN_STRATIFIED:
+      residual_resample(nW, adWeights, nI, anIndices, STRATIFIED_RESAMPLING);
       break;
-    case 5: // multinomial on residual
-      residual_resample(nW, adWeights, nI, anIndices, 2);
+    case RESIDUAL_RESAMPLING_THEN_MULTINOMIAL: 
+      residual_resample(nW, adWeights, nI, anIndices, MULTINOMIAL_RESAMPLING);
       break;
-    case 6: // systematic on residual
-      residual_resample(nW, adWeights, nI, anIndices, 3);
+    case RESIDUAL_RESAMPLING_THEN_SYSTEMATIC : 
+      residual_resample(nW, adWeights, nI, anIndices, SYSTEMATIC_RESAMPLING);
       break;
   }
   return 0;
@@ -316,13 +321,13 @@ int residual_resample(int nW, double *adWeights, int nI, int *anIndices,
 
   switch (nResidualResampleFunction) 
   {
-    case 1:
+    case STRATIFIED_RESAMPLING:
       stratified_resample( nW, adWeights, nI, &anIndices[nDeterministicReps]);
       break;
-    case 2:
+    case MULTINOMIAL_RESAMPLING:
       multinomial_resample(nW, adWeights, nI, &anIndices[nDeterministicReps]);
       break;
-    case 3:
+    case SYSTEMATIC_RESAMPLING:
       systematic_resample( nW, adWeights, nI, &anIndices[nDeterministicReps]);
       break;
     default:
