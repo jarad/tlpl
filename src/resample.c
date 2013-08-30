@@ -99,6 +99,8 @@ int inverse_cdf_weights(int nW,
     qsort(adUniforms, nU, sizeof(double), compare_doubles);
 
   double * adCumSum = malloc(nW * sizeof(double));
+  if (adCumSum == NULL) { error("C: adCumSum not dynamically allocated"); } 
+
   memcpy(adCumSum, adWeights, nW * sizeof(double));
 
   cumulative_sum(nW, adCumSum);
@@ -121,17 +123,15 @@ int inverse_cdf_weights(int nW,
     anIndices[i] = j;
   } 
 
-  free(adCumSum);
+  free(adCumSum); adCumSum = NULL;
 
   return NO_FXN_ERROR;   
 }
 
 
 /***********************************************************************/
-/* Effective sample size functions                                     */
+/* Particle weight nonuniformity                                       */
 /***********************************************************************/
-
-
 
 
 double ess(int n, double *weights)
@@ -141,8 +141,6 @@ double ess(int n, double *weights)
   for (i=0; i<n; i++) sum += weights[i]*weights[i];
   return 1/sum;
 }
-
-
 
 
 double cov2(int n, double *weights) 
@@ -165,10 +163,6 @@ double cov2(int n, double *weights)
   // Return cov^2
   return var/(mean*mean);
 }
-
-
-
-
 
 
 double entropy(int n, double *weights)
