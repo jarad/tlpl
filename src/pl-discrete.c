@@ -305,6 +305,16 @@ int tlpl(int nObs, int *anY, double *adTau,
         // Check for negative states 
         if (anyNegative(ns, nPart->state)) 
         {
+          if (nVerbose>2) 
+          {
+            Rprintf("States: ");
+            for (k=0; k<ns; k++) 
+            {
+              Rprintf("%d=%d ", k, nPart->state[k]);
+            }
+          }
+
+
           nAnyNegative++;
         } else
         {
