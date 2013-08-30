@@ -35,11 +35,6 @@ int compare_doubles (const void *X, const void *Y)
 }
 
 
-void is_increasing_R(int *n, const double *v, int *returned) 
-{
-  *returned = is_increasing(*n, v); 
-}
-
 int is_increasing(int n, const double *v) 
 {
   int i; 
@@ -51,10 +46,6 @@ int is_increasing(int n, const double *v)
 }
 
 
-void cumulative_sum_R(int *n, double *v) 
-{
-  cumulative_sum(*n, v);
-}
 
 int cumulative_sum(int n, double *v) 
 {
@@ -64,10 +55,6 @@ int cumulative_sum(int n, double *v)
 }
 
 
-void rep2id_R(int *rep, int *sum, int *id) 
-{
-  rep2id(rep, *sum, id);
-}
 
 int rep2id(int *rep, int sum, int *id)
 {
@@ -94,10 +81,7 @@ int rep2id(int *rep, int sum, int *id)
 }
 
 
-void inverse_cdf_weights_R(int *nW, double *adWeights, int *nU, double *adUniforms, int *anIndices)
-{
-  inverse_cdf_weights(*nW, adWeights, *nU, adUniforms, anIndices);
-}
+
 
 
 int inverse_cdf_weights(int nW, 
@@ -138,11 +122,7 @@ int inverse_cdf_weights(int nW,
 /***********************************************************************/
 
 
-// Effective sample size
-void ess_R(int *n, double *weights, double *returned)
-{
-  *returned = ess(*n, weights);
-}
+
 
 double ess(int n, double *weights)
 {
@@ -153,11 +133,7 @@ double ess(int n, double *weights)
 }
 
 
-// Coefficient of variation squared
-void cov2_R(int *n, double *weights, double *returned)
-{
-  *returned = cov2(*n, weights);
-}
+
 
 double cov2(int n, double *weights) 
 {
@@ -183,9 +159,7 @@ double cov2(int n, double *weights)
 
 
 
-void entropy_R(int *n, double *weights, double *returned) {
-  *returned = entropy(*n, weights);
-}
+
 
 double entropy(int n, double *weights)
 {
@@ -221,12 +195,6 @@ int doResample(int n, double *weights, int nNonuniformity, double dThreshold)
 /* Resampling functions                                                */
 /***********************************************************************/
 
-void resample_R(int *nW, double *adWeights, int *nI, int *anIndices,
-                   int *nResamplingFunction)
-{
-  resample(*nW, adWeights, *nI, anIndices, *nResamplingFunction);
-}
-
 int resample(int nW, double *adWeights, int nI, int *anIndices, 
              int nResamplingFunction)
 {
@@ -255,12 +223,6 @@ int resample(int nW, double *adWeights, int nI, int *anIndices,
 }
 
 
-void stratified_resample_R(int *nW, double *adWeights, int *nI, int *anIndices)
-{
-  stratified_resample(*nW, adWeights, *nI, anIndices);
-}
-
-
 
 int stratified_resample(int nW, double *adWeights, int nI, int *anIndices)
 {
@@ -278,10 +240,6 @@ int stratified_resample(int nW, double *adWeights, int nI, int *anIndices)
 
 
 
-void multinomial_resample_R( int *nW, double *adWeights, int *nI, int *anIndices)
-{
-  multinomial_resample(*nW, adWeights, *nI, anIndices);
-}
 
 int multinomial_resample(int nW, double *adWeights, int nI, int *anIndices) 
 {
@@ -302,11 +260,6 @@ int multinomial_resample(int nW, double *adWeights, int nI, int *anIndices)
 
 
 
-void systematic_resample_R(int *nW, double *adWeights, int *nI, int *anIndices)
-{
-  systematic_resample(*nW, adWeights, *nI, anIndices);
-}
-
 
 int systematic_resample(int nW, double *adWeights, int nI, int *anIndices)
 {
@@ -326,11 +279,6 @@ int systematic_resample(int nW, double *adWeights, int nI, int *anIndices)
 
 
 
-void residual_resample_R(int *nW, double *adWeights, int *nI, int *anIndices, 
-                            int *nResidualResampleFunction)
-{
-  residual_resample(*nW, adWeights, *nI, anIndices, *nResidualResampleFunction);
-}
 
 int residual_resample(int nW, double *adWeights, int nI, int *anIndices,
                        int nResidualResampleFunction)
