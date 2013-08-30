@@ -11,6 +11,10 @@
 #define RESIDUAL_RESAMPLING_THEN_MULTINOMIAL 5
 #define RESIDUAL_RESAMPLING_THEN_SYSTEMATIC 6
 
+#define NOT_SORTED 0
+#define SORTED 1
+
+
 /***********************************************************************/
 /* Utility functions                                                   */
 /***********************************************************************/
@@ -37,17 +41,6 @@ int compare_doubles (const void *X, const void *Y)
       return 0;
     }
   }
-}
-
-
-int is_increasing(int n, const double *v) 
-{
-  int i; 
-  for (i=1; i<n; i++)
-  {
-    if (v[i]<v[i-1]) return 0;
-  }
-  return 1;
 }
 
 
@@ -90,15 +83,19 @@ int rep2id(int *rep, int sum, int *id)
 
 
 int inverse_cdf_weights(int nW, 
-                         double *adWeights, 
-                         int nU, 
-                         double *adUniforms,
-                         int *anIndices)
+                        const double *adWeights, 
+                        int nU, 
+                        double *adUniforms,
+                        int *anIndices
+                        int isSorted)
 {
-  if (!is_increasing(nU, adUniforms))    
+  if (!isSorted) 
     qsort(adUniforms, nU, sizeof(double), compare_doubles);
 
-  cumulative_sum(nW, adWeights);
+  double * adCumSum = malloc(nW * sizeof(double));
+  memcpy(adCumSum, adWeights, nW * sizeof(double));
+
+  cumulative_sum(nW, adCumSum);
 
   int i, j=0, found;
   for (i=0; i<nU; i++) 
@@ -106,7 +103,7 @@ int inverse_cdf_weights(int nW,
     found=0;
     while (!found) 
     {
-      if (adUniforms[i] > adWeights[j])
+      if (adUniforms[i] > adCumSum[j])
       {
         j++;
       }
@@ -223,6 +220,8 @@ int resample(int nW, double *adWeights, int nI, int *anIndices,
     case RESIDUAL_RESAMPLING_THEN_SYSTEMATIC : 
       residual_resample(nW, adWeights, nI, anIndices, SYSTEMATIC_RESAMPLING);
       break;
+    default:
+      REprintf("C: resample: no match for resampling function\n");
   }
   return 0;
 }
@@ -238,7 +237,7 @@ int stratified_resample(int nW, double *adWeights, int nI, int *anIndices)
   for (i=0;i<nI;i++) adUniforms[i] = runif((double) i/nI, (double) (i+1)/nI);
   PutRNGstate();
 
-  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices);
+  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, SORTED);
 
   return 0;
 }
@@ -255,7 +254,7 @@ int multinomial_resample(int nW, double *adWeights, int nI, int *anIndices)
   for (i=0; i<nI; i++) adUniforms[i] = runif(0,1);
   PutRNGstate();
 
-  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices);
+  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, NOT_SORTED);
 
   return 0;
 }
@@ -275,7 +274,7 @@ int systematic_resample(int nW, double *adWeights, int nI, int *anIndices)
   PutRNGstate();
   for (i=1; i<nI; i++) adUniforms[i] =  adUniforms[i-1]+ (float) 1 / nI;
 
-  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices);
+  inverse_cdf_weights(nW, adWeights, nI, adUniforms, anIndices, SORTED);
 
   return 0;
 }

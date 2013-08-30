@@ -1,9 +1,8 @@
 
 int compare_doubles(const void *, const void *);
-int is_increasing(int , const double *);
 int cumulative_sum(int , double *);
 int rep2id(int *, int , int *);
-int inverse_cdf_weights(int , double *, int , double *, int *);
+int inverse_cdf_weights(int , const double *, int , double *, int *, int);
 
 double ess(int , double *);
 double cov2(int , double *);
