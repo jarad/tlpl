@@ -38,17 +38,17 @@ double calc_log_pred_like(const int *anY, double dTau, Sckm *sckm, SckmParticle 
 {
   int nr = sckm->r;
 
-  double adP2[nr], dLogPredLik=0;
+  double dLogPredLik=0;
   for (int i=0; i<nr; i++) {
-    adP2[i] = 1.0/(1.0+particle->rateB[i]/(particle->prob[i]*adHazardPart[i]*dTau));
-    if (adP2[i]>0)
-    {
-      dLogPredLik += dnbinom(anY[i], particle->rateA[i], 1-adP2[i], 1);
-    } 
-    else 
-    {
-      if (anY[i]>0) return -INFINITY;
-    }
+    // If the hazard is zero, but the data indicate a reaction occurred
+    // then set particle weight to zero. 
+    // e.g. SIR model with zero I, but S+I->2I reaction occurs
+    if ( (adHazardPart[i]<0.0001) & (anY[i]>0) ) return -INFINITY;
+
+    dLogPredLik += dnbinom(anY[i], 
+                           particle->rateA[i], 
+                           particle->rateB[i] / (particle->rateB[i] + particle->prob[i]*adHazardPart[i]*dTau), 
+                           1);
   }
   return dLogPredLik;
 }
