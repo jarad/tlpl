@@ -36,7 +36,7 @@ void calc_log_pred_like_R(const int *anY, const double *dTau,
 double calc_log_pred_like(const int *anY, double dTau, Sckm *sckm, SckmParticle *particle,
                           double *adHazardPart) 
 {
-  int nr = sckm->r;
+  int nr = sckm->r; 
 
   double dLogPredLik=0;
   for (int i=0; i<nr; i++) {
