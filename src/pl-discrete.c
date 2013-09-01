@@ -309,11 +309,58 @@ int tlpl(int nObs, int *anY, double *adTau,
 
         if (nVerbose>2)
         {
+          Rprintf("\n");
+          Rprintf("Rate A: ");
+          for (l=0; l<nr; l++)
+          {
+            Rprintf("%d=%4.2f ", l, cPart->rateA[l]);
+          }
+          Rprintf("\n");
+
+
+          Rprintf("Rate B: ");
+          for (l=0; l<nr; l++)
+          {
+            Rprintf("%d=%4.2f ", l, cPart->rateB[l]);
+          }
+          Rprintf("\n");
+
+          Rprintf("Rate A/B: ");
+          for (l=0; l<nr; l++)
+          {
+            Rprintf("%d=%4.2f ", l, cPart->rateA[l]/cPart->rateB[l]);
+          }
+          Rprintf("\n");
+
+          Rprintf("Probability: ");
+          for (l=0; l<nr; l++)
+          {
+            Rprintf("%d=%4.2f ", l, cPart->prob[l]);
+          }
+          Rprintf("\n");
+
+          Rprintf("Data: ");
+          for (l=0; l<nr; l++)
+          {
+            Rprintf("%d=%d ", l, cY[l]);
+          }
+          Rprintf("\n");
+
+          Rprintf("Expected transitions: ");
+          for (l=0; l<nr; l++)
+          {
+            Rprintf("%d=%4.2f ", l, mn[l]);
+          }
+          Rprintf("\n");
+
+
+
           Rprintf("Pre- States: ");
           for (l=0; l<ns; l++)
           {
             Rprintf("%d=%d ", l, nPart->state[l]);
           }
+          Rprintf("\n");
         }
 
 
