@@ -267,7 +267,7 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
            # Inputs
            ## Data
            as.integer(n),
-           as.integer(data$y),
+           as.integer(t(data$y)),
            as.double( data$tau),
          
            ## sckm
