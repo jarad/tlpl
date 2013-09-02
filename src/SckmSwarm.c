@@ -17,6 +17,11 @@ SckmSwarm **newSckmSwarms(Sckm *sckm, int _nParticles, int _nObs,
     SckmSwarm **swarms;
     swarms = (SckmSwarm **) malloc((_nObs+1) * sizeof(SckmSwarm *));
 
+    if (swarms == NULL) 
+    {
+      error("Memory for swarms could not be allocated.\n");
+    }
+
     int i, nRxnOffset = _nParticles * sckm->r, nSpeciesOffset = _nParticles * sckm->s;
 
     for (i=0; i<=_nObs; i++) 
@@ -48,12 +53,24 @@ SckmSwarm *newSckmSwarm(Sckm *sckm, int _nParticles,
 {
     SckmSwarm *swarm;
     swarm = (SckmSwarm *) malloc(sizeof(SckmSwarm)); 
+
+    if (swarm == NULL) 
+    {
+      error("Memory for swarm could not be allocated.\n");
+    }
+
     swarm->nParticles = _nParticles;
     swarm->nStates    = sckm->s;
     swarm->nRxns      = sckm->r;
 
     // Allocate dWeights and make uniform
     swarm->adWeights = (double *) malloc(_nParticles * sizeof(double));
+
+    if (swarm->adWeights == NULL) 
+    {
+      error("Memory for swarm->adWeights could not be allocated.\n");
+    } 
+
     memset(swarm->adWeights, 0, _nParticles);
 
     swarm->logWeights        = 1; // log weights
@@ -61,9 +78,22 @@ SckmSwarm *newSckmSwarm(Sckm *sckm, int _nParticles,
 
     // Associate particle pointers
     swarm->pParticle = (SckmParticle **) malloc(_nParticles * sizeof(SckmParticle *));
+
+    if (swarm->pParticle == NULL) 
+    {
+      error("Memory for swarm->pParticle could not be allocated.\n");
+    }
+
+
     for (int i=0; i< _nParticles; i++) 
     {
         swarm->pParticle[i] = (SckmParticle *) malloc(sizeof(SckmParticle));
+
+        if (swarm->pParticle[i] == NULL) 
+        {
+          error("Memory for swarm->pParticle[i] could not be allocated.\n");
+        }
+
         swarm->pParticle[i]->state = _state; _state += sckm->s;
         swarm->pParticle[i]->probA = _probA; _probA += sckm->r;
         swarm->pParticle[i]->probB = _probB; _probB += sckm->r;
