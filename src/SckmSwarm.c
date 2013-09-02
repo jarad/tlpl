@@ -43,7 +43,7 @@ SckmSwarm **newSckmSwarms(Sckm *sckm, int _nParticles, int _nObs,
 void deleteSckmSwarms(SckmSwarm **swarms, int nObs)
 {
     for (int i=0; i<=nObs; i++) deleteSckmSwarm(swarms[i]);
-    free(swarms);
+    free(swarms); swarms = NULL;
 }
 
 
@@ -106,10 +106,14 @@ SckmSwarm *newSckmSwarm(Sckm *sckm, int _nParticles,
 
 void deleteSckmSwarm(SckmSwarm *swarm)
 {
-    free(swarm->adWeights); 
-    for (int i=0; i< swarm->nParticles; i++) free(swarm->pParticle[i]);
-    free(swarm->pParticle);
-    free(swarm);
+    free(swarm->adWeights); swarm->adWeights = NULL;
+    for (int i=0; i< swarm->nParticles; i++)
+    {
+      free(swarm->pParticle[i]); swarm->pParticle[i] = NULL;
+    }
+
+    free(swarm->pParticle); swarm->pParticle = NULL;
+    free(swarm); swarm = NULL;
 }
 
 int renormalize(SckmSwarm *swarm)

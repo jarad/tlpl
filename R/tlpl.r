@@ -262,8 +262,6 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
     x$threshold = 0.5 * ifelse(x$nonuniformity==4, log2(np), np)
   }
 
-stop()
-
   tmp = .C("tlpl_R",
 
            # Inputs
