@@ -295,24 +295,6 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
            rateb = as.double( out$hyper$rate$b)
           )
 
-cat("Output from C:\n")
-cat("dim(X)=", length(tmp$X),"\n")
-cat("ns x np x (n+1)=", ns*n.particles*(n+1),"\n")
-
-cat("dim(proba)=", length(tmp$proba), "\n")
-cat("dim(probb)=", length(tmp$probb), "\n")
-cat("dim(ratea)=", length(tmp$ratea), "\n")
-cat("dim(rateb)=", length(tmp$rateb), "\n")
-cat("nr x np x (n+1)=", nr*n.particles*(n+1),"\n")
-
-
-cat("X[1]=",tmp$X[1],"X[end]=",tmp$X[ns*n.particles*(n+1)],"\n")
-
-cat("proba[1]=",tmp$proba[1],"proba[end]=",tmp$proba[nr*n.particles*(n+1)],"\n")
-cat("probb[1]=",tmp$probb[1],"probb[end]=",tmp$probb[nr*n.particles*(n+1)],"\n")
-cat("ratea[1]=",tmp$ratea[1],"ratea[end]=",tmp$ratea[nr*n.particles*(n+1)],"\n")
-cat("rateb[1]=",tmp$rateb[1],"rateb[end]=",tmp$rateb[nr*n.particles*(n+1)],"\n")
-
   # Re-organize output
   # ?? make sure this is done properly
   out = list()
