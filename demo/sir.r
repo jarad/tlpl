@@ -6,11 +6,11 @@ ask   = FALSE
 
 ## Simulate data
 set.seed(2)
-sckm = sckm("sir", X=c(16000, 100, 0), theta=c(.5,.25))
+sys = sckm("sir", X=c(16000, 100, 0), theta=c(.5,.25))
 n = 50
 
 ### True states and transitions
-tl = tau_leap(sckm, n)
+tl = tau_leap(sys, n)
 
 ### Sample transitions
 p = c(0.99,0.99) # Sample probabilities for S->I and I->R respectively
@@ -20,7 +20,7 @@ y = cbind(rbinom(n, tl$nr[,1], p[1]), rbinom(n, tl$nr[,2], p[2]))
 clrs = c("seagreen","red","blue")
 ld=3
 par(mfrow=c(1,3))
-plot( tl$X[,1], type="l", ylim=c(0,sckm$X[1]), lwd=ld, col=clrs[1], 
+plot( tl$X[,1], type="l", ylim=c(0,sys$X[1]), lwd=ld, col=clrs[1], 
       xlab="Time", ylab="Number", main="Truth")
 lines(tl$X[,2], lwd=ld, col=clrs[2])
 lines(tl$X[,3], lwd=ld, col=clrs[3])
@@ -48,12 +48,12 @@ if (plots) dev.copy2pdf(file="example2-data.pdf")
 cat("\nRunning sequential inference...\n")
 np = 1e4
 
-Xprior = matrix(0, sckm$s, np)
-Xprior[1,] = rbinom(np, sum(sckm$X), sckm$X[1]/sum(sckm$X))
-Xprior[2,] = sum(sckm$X) - Xprior[1,]
+Xprior = matrix(0, sys$s, np)
+Xprior[1,] = rbinom(np, sum(sys$X), sys$X[1]/sum(sys$X))
+Xprior[2,] = sum(sys$X) - Xprior[1,]
 
-prior = tlpl_prior(Xprior, 100*p, 100*(1-p), sckm$theta*1, 1, sckm$r)
-z = tlpl(list(y=y, tau=1), sckm, prior=prior, n.particles=np, engine="R", verbose=1)
+prior = tlpl_prior(Xprior, 100*p, 100*(1-p), sys$theta*1, 1, sys$r)
+z = tlpl(list(y=y, tau=1), sys, prior=prior, n.particles=np, engine="R", verbose=1)
 
 cat("\nCalculating quantiles...\n")
 qs = tlpl_quantile(z)
@@ -70,20 +70,20 @@ xx = 0:n
 par(mfrow=c(1,3))
 
 ### Susceptible
-plot( xx, qs$X[1,1,], type="l", ylim=c(0, max(sckm$X)), main="Susceptible", ylab="Count", xlab="Time")
+plot( xx, qs$X[1,1,], type="l", ylim=c(0, max(sys$X)), main="Susceptible", ylab="Count", xlab="Time")
 lines(xx, qs$X[1,2,], lwd=2)
 lines(xx, qs$X[1,3,])
 lines(xx, tl$X[,1], col="red", lwd=2)
 
 ### Infecteds
-plot( xx, qs$X[2,1,], type="l", ylim=c(0, max(sckm$X)), main="Infectious", ylab="Count", xlab="Time")
+plot( xx, qs$X[2,1,], type="l", ylim=c(0, max(sys$X)), main="Infectious", ylab="Count", xlab="Time")
 lines(xx, qs$X[2,2,], lwd=2)
 lines(xx, qs$X[2,3,])
 lines(xx, tl$X[,2], col="red", lwd=2)
 
 
 ### Recovered
-plot( xx, qs$X[3,1,], type="l", ylim=c(0, max(sckm$X)), main="Recovered", ylab="Count", xlab="Time")
+plot( xx, qs$X[3,1,], type="l", ylim=c(0, max(sys$X)), main="Recovered", ylab="Count", xlab="Time")
 lines(xx, qs$X[3,2,], lwd=2)
 lines(xx, qs$X[3,3,])
 lines(xx, tl$X[,3], col="red", lwd=2)
@@ -114,14 +114,14 @@ abline(h=p[2], col="red", lwd=2)
 plot( xx, qs$r[1,1,], type="l", ylim=range(qs$r[1,,]), main="S -> I", ylab="Rate", xlab="Time")
 lines(xx, qs$r[1,2,], lwd=2)
 lines(xx, qs$r[1,3,])
-abline(h=sckm$theta[1], col="red", lwd=2)
+abline(h=sys$theta[1], col="red", lwd=2)
 
 
 ### I->R rate
 plot( xx, qs$r[2,1,], type="l", ylim=range(qs$r[2,,]), main="I -> R", ylab="Rate", xlab="Time")
 lines(xx, qs$r[2,2,], lwd=2)
 lines(xx, qs$r[2,3,])
-abline(h=sckm$theta[2], col="red", lwd=2)
+abline(h=sys$theta[2], col="red", lwd=2)
 
 if (plots) dev.copy2pdf(file="example2-parameters.pdf")
 
@@ -138,7 +138,7 @@ z2$hyper$rate = list(a = z$hyper$rate$a[,1:np,tt],
 z2$hyper$prob = list(a = z$hyper$prob$a[,1:np,tt], 
                      b = z$hyper$prob$b[,1:np,tt])
 
-z3 = tlpl_predict(sckm, n-tt, z2, verbose=1)
+z3 = tlpl_predict(sys, n-tt, z2, verbose=1)
 
 Xq = tlpl_quantile(z3, which="x")
 yq = tlpl_quantile(list(X=z3$y), which="x")
@@ -154,7 +154,7 @@ x1 = xx[1:tt]
 x2 = xx[tt:n]
 
 ### Susceptible
-plot( x1, qs$X[1,1,1:tt], type="l", ylim=c(0, max(sckm$X)), xlim=c(0,n), main="Susceptible", ylab="Count", xlab="Time")
+plot( x1, qs$X[1,1,1:tt], type="l", ylim=c(0, max(sys$X)), xlim=c(0,n), main="Susceptible", ylab="Count", xlab="Time")
 lines(x1, qs$X[1,2,1:tt], lwd=2)
 lines(x1, qs$X[1,3,1:tt])
 
@@ -165,7 +165,7 @@ lines(x2, Xq$X.quantiles[1,3,], col="blue")
 lines(xx, tl$X[,1], col="red", lwd=2)
 
 ### Infecteds
-plot( x1, qs$X[2,1,1:tt], type="l", ylim=c(0, max(sckm$X)), xlim=c(0,n), main="Infected", ylab="Count", xlab="Time")
+plot( x1, qs$X[2,1,1:tt], type="l", ylim=c(0, max(sys$X)), xlim=c(0,n), main="Infected", ylab="Count", xlab="Time")
 lines(x1, qs$X[2,2,1:tt], lwd=2)
 lines(x1, qs$X[2,3,1:tt])
 
@@ -177,7 +177,7 @@ lines(xx, tl$X[,2], col="red", lwd=2)
 
 
 ### Recovered
-plot( x1, qs$X[3,1,1:tt], type="l", ylim=c(0, max(sckm$X)), xlim=c(0,n), main="Recovered", ylab="Count", xlab="Time")
+plot( x1, qs$X[3,1,1:tt], type="l", ylim=c(0, max(sys$X)), xlim=c(0,n), main="Recovered", ylab="Count", xlab="Time")
 lines(x1, qs$X[3,2,1:tt], lwd=2)
 lines(x1, qs$X[3,3,1:tt])
 
