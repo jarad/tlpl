@@ -193,6 +193,15 @@ void tlpl_R(
        sckm, swarm, 
        *nResamplingMethod, *nNonuniformity, *dThreshold, *nVerbose, *nWhileMax);
 
+/* Temporary debugging
+  Rprintf("anX: %d\n", anX[0]);
+  Rprintf("adProbA: %4.2f\n", adProbA[0]);
+  Rprintf("adProbB: %4.2f\n", adProbB[0]);
+  Rprintf("adRateA: %4.2f\n", adRateA[0]);
+  Rprintf("adRateB: %4.2f\n", adRateB[0]);
+*/
+
+
   deleteSckmSwarms(swarm, *nObs);
   deleteSckm(sckm);
 }
