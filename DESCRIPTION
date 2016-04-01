@@ -16,8 +16,9 @@ URL: https://github.com/jarad/tlpl
 LazyLoad: yes
 Depends:
     stats
+Imports:
+    smcUtils
 Suggests:
-    smcUtils,
     testthat
 Collate:
     'gillespie.r'
