@@ -11,3 +11,5 @@
 
 # Temporary MacVim files
 *.swp
+.Rproj.user
+tlpl.Rproj
