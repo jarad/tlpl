@@ -42,6 +42,8 @@ tlpl_prior = function(X, p.a, p.b, r.a, r.b, nr)
 #' @param verbose level of output
 #' @param while.max an integer indicating the maximum number of times through a while loop
 #' @param ... additional parameters for resampling
+#' @importFrom smcUtils renormalize
+#' @importFrom smcUtils resample
 #' @return a list containing sample for states and sufficient statistics
 #' @author Jarad Niemi \email{niemi@@iastate.edu}
 #' @seealso \code{\link{tlpl_quantile}}
@@ -157,8 +159,8 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
     }
 
     # Resample particles
-    w = renormalize(w,log=T)
-    rs = resample(w,...)$indices
+    w = smcUtils::renormalize(w,log=T)
+    rs = smcUtils::resample(w,...)$indices
 
     # Propagate particles
     for (j in 1:np)
@@ -173,7 +175,7 @@ tlpl = function(data, sckm, swarm=NULL, prior=NULL, n.particles=NULL,
         # Clearly reasonable for multinomial resampling, but what about the rest? 
         #kk = resample(w,1, method="multinomial")$indices # new particle id
         kk = ifelse(any.negative==1, rs[j],
-              resample(w,1, method="multinomial")$indices) 
+              smcUtils::resample(w,1, method="multinomial")$indices) 
 
         # Calculate mean for unobserved transitions
         lambda = rgamma(nr, swarm$hyper$rate$a[,kk], swarm$hyper$rate$b[,kk])
