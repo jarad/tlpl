@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-int anyNegative(IntegerVector v)                   
+bool anyNegative(IntegerVector v)                   
 {
     for (int i=0; i<v.size(); i++) 
     {
