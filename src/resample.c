@@ -52,16 +52,6 @@ int compare_doubles (const void *X, const void *Y)
 }
 
 
-
-int cumulative_sum(int n, double *v) 
-{
-  int i;
-  for (i=1; i<n; i++) v[i] += v[i-1];
-  return NO_FXN_ERROR;
-}
-
-
-
 int rep2id(int *rep, int sum, int *id)
 {
   // This implementation seems poor. 
@@ -133,16 +123,6 @@ int inverse_cdf_weights(int nW,
 /* Particle weight nonuniformity                                       */
 /***********************************************************************/
 
-
-double ess(int n, double *weights)
-{
-  int i;
-  double sum=0;
-  for (i=0; i<n; i++) sum += weights[i]*weights[i];
-  return 1/sum;
-}
-
-
 double cov2(int n, double *weights) 
 {
   int i;
@@ -165,13 +145,6 @@ double cov2(int n, double *weights)
 }
 
 
-double entropy(int n, double *weights)
-{
-  int i;
-  double sum=0;
-  for (i=0; i<n; i++) sum += weights[i]*log2(weights[i]); // should add smallest constant within log2()
-  return -sum;
-}
 
 
 
