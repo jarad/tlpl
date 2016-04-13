@@ -5,19 +5,22 @@ Version: 0.1
 Author: Jarad Niemi
 Maintainer: Jarad Niemi <niemi@iastate.edu>
 Date: 2013-08-13
-Description: Tau-leaped particle learning is a sequential Monte Carlo
-approach to Bayesian inference in a Poisson-binomial state-space
-model, ie. Poisson transitions and binomial observations on those
-transitions. Tau-leaping provides a discrete approximation to a 
-continuous-time process and particle utilizes analytical tractabilities
-of the model to provide an efficient algorithm.
+Description: Tau-leaped particle learning is a sequential Monte
+    Carlo (SMC) approach to Bayesian inference in a Poisson-binomial
+    state-space model, ie. Poisson transitions and binomial
+    observations on those transitions. Tau-leaping provides a
+    discrete approximation to a continuous-time process and particle
+    utilizes analytical tractabilities of the model to provide an
+    efficient algorithm.
 License: GPL-3
 URL: https://github.com/jarad/tlpl
+BugReports: https://github.com/jarad/tlpl/issues
 LazyLoad: yes
 Depends:
-    stats
+    R (>= 3.2.3)
 Imports:
-    smcUtils
+    smcUtils,
+    stats
 Suggests:
     testthat
 Collate:
@@ -28,3 +31,4 @@ Collate:
     'tlpl_predict.r'
     'tlpl_quantile.r'
     'tlpl.r'
+RoxygenNote: 5.0.1
