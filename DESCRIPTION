@@ -1,10 +1,10 @@
 Package: tlpl
 Type: Package
 Title: Tau-leaped particle learning
-Version: 0.1
+Version: 0.1.1
 Author: Jarad Niemi
 Maintainer: Jarad Niemi <niemi@iastate.edu>
-Date: 2013-08-13
+Date: 2015-04-13
 Description: Tau-leaped particle learning is a sequential Monte
     Carlo (SMC) approach to Bayesian inference in a Poisson-binomial
     state-space model, ie. Poisson transitions and binomial
@@ -19,16 +19,9 @@ LazyLoad: yes
 Depends:
     R (>= 3.2.3)
 Imports:
-    smcUtils,
+    Rcpp (>= 0.12.4),
+    RcppArmadillo (>= 0.4.600.4.0),
     stats
 Suggests:
     testthat
-Collate:
-    'gillespie.r'
-    'Particle.r'
-    'pl.step.r'
-    'System.r'
-    'tlpl_predict.r'
-    'tlpl_quantile.r'
-    'tlpl.r'
 RoxygenNote: 5.0.1
