@@ -1,6 +1,6 @@
-#include <Rcpp.h>
-#include <RcppArmadilloExtensions/sample.h>
 // [[Rcpp::depends(RcppArmadillo)]]
+
+#include <RcppArmadilloExtensions/sample.h>
 
 using namespace Rcpp;
 
@@ -14,7 +14,8 @@ double ess(NumericVector w)
 
 
 // [[Rcpp::export]]
-IntegerVector multinomial_resample(NumericVector w, int nI)
+IntegerVector multinomial_resample(NumericVector w, int n)
 {
-  return RcppArmadillo::sample(seq_len(nI), nI, TRUE, w);
+  IntegerVector ii = seq_len(w.length());
+  return RcppArmadillo::sample(ii, n, TRUE, w);
 }
