@@ -8,8 +8,20 @@ resample(runif(5),10, 2)
 sourceCpp("src/gillespie.cpp")
 
 # SIR
-A = cbind(c(-1,1,0), c(0,-1,1))
-S = t(A)
+library(tlpl)
+sir = sckm('sir')
+sir$lmult = log(sir$mult)
 
-update_species(S, c(1,1), c(2,3,0))
+sir$X
+update_species(sir, c(1, 1))
+sir$X
 
+# 
+hazard_part(sir, sir$X)
+
+n = 10:15
+k = 1:6
+
+lchoose(n,k)
+
+test(n,k)
