@@ -1,34 +1,23 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
-
-///* Calculates the part of the hazard other than the fixed parameter */
-//void hazard_part_R(int *nSpecies, int *nRxns, int *anPre, int *anPost, double *adlMult,
-//                   const int *anX, double *adHazardPart)
-//{
-//  Sckm *sckm = newSckm(*nSpecies, *nRxns, anPre, anPost, adlMult);
-//  hazard_part(sckm, anX, adHazardPart);
-//  deleteSckm(sckm);
-//}
-
-//int hazard_part(Sckm *sckm, const int *anX, double *adHazardPart)
-//{
-//  int i, j, k, ns=sckm->s, nr=sckm->r;
-//
-//  for (i=0; i<nr; i++) 
-//  {
-//    adHazardPart[i] = sckm->lMult[i];
-//    for (j=0; j<ns; j++) 
-//    { 
-//      k = i * ns + j;
-//      adHazardPart[i] += lchoose(anX[j], sckm->Pre[k]); 
-//    }    
-//      adHazardPart[i] = exp(adHazardPart[i]);
-//  } 
-//
-//  return 0;     
-//}
+// [[Rcpp::export]]
+NumericVector hazard_part(List sckm, IntegerVector const X)
+{
+  int nr = sckm["r"],
+      ns = sckm["s"];  
+  SEXP SEXP_lmult = sckm["lmult"],
+       SEXP_Pre   = sckm["Pre"];
+  IntegerMatrix Pre(SEXP_Pre);
+  NumericVector hazard_part(clone(SEXP_lmult));
+  Rcout << hazard_part << std::endl;
+  
+  for (int r=0; r<nr; r++) 
+    for (int s=0; s<ns; s++)
+      hazard_part[r] += Rf_lchoose(X[s], Pre(r,s)); 
+      
+  return exp(hazard_part);
+}
 //
 ///* Calculates the hazard for the next reaction */
 //void hazard_R(int *nSpecies, int *nRxns, int *anPre, int *anPost, double *adlMult,
@@ -54,23 +43,13 @@ using namespace Rcpp;
 //
 //  return 0;
 //}
-//
-//
-///* Updates the species according to the stoichiometry */
-//void update_species_R(int *nSpecies, int *nRxns, int *anPre, int *anPost, double *adlMult,  
-//                    const int *anRxnCount, int *anX)
-//{
-//  Sckm *sckm = newSckm(*nSpecies, *nRxns, anPre, anPost, adlMult);
-//  update_species(sckm, anRxnCount, anX);
-//  deleteSckm(sckm);
-//}
-//
+
 
 // [[Rcpp::export]]
-IntegerVector update_species(IntegerMatrix S, IntegerVector const rxn_count, IntegerVector X)              // return: updated species
+IntegerVector update_species(IntegerMatrix const S, IntegerVector const rxn_count, IntegerVector X)              // return: updated species
 {
-  for (int r = 0; r < S.nrow(); r++)
-    X = X + S(r,_) * rxn_count[r];
+  for (int r = 0; r < S.ncol(); r++)
+    X = X + S(_,r) * rxn_count[r];
  
   return X;
 }
