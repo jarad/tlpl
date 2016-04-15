@@ -22,6 +22,8 @@ class Sckm
     void update(IntegerVector);
     void print();
     
+    bool any_negative() { return any(X<0); }
+    
     void check();
 };
 
