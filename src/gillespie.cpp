@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+
 using namespace Rcpp;
 
 // [[Rcpp::export]]
@@ -18,61 +19,48 @@ NumericVector hazard_part(List sckm, IntegerVector const X)
       
   return exp(hazard_part);
 }
-//
-///* Calculates the hazard for the next reaction */
-//void hazard_R(int *nSpecies, int *nRxns, int *anPre, int *anPost, double *adlMult,
-//            const double *adTheta,   
-//            const int *anX, 
-//            double *dTau,  
-//            double *adHazardPart, double *adHazard) 
+
+//NumericVector hazard(NumericVector const theta, double tau,
+//                     NumericVector hazard_part)
 //{
-//  Sckm *sckm = newSckm(*nSpecies, *nRxns, anPre, anPost, adlMult);
-//  hazard(sckm, adTheta, anX, *dTau, adHazardPart, adHazard);
-//  deleteSckm(sckm);
-//}
-//
-//
-//int hazard(Sckm *sckm, const double *adTheta, const int *anX, double dTau,  
-//           double *adHazardPart, double *adHazard)                   // return: hazard part and hazard
-//{
-//  hazard_part(sckm, anX, adHazardPart);
-//  for (int i=0; i<sckm->r; i++) 
-//  {
-//    adHazard[i] = adTheta[i]*adHazardPart[i]*dTau;
-//  }
-//
-//  return 0;
+//  return NumericVector = theta*hazard_part*tau;
 //}
 
 
 // [[Rcpp::export]]
-IntegerVector update_species(IntegerMatrix const S, IntegerVector const rxn_count, IntegerVector X)              // return: updated species
+void update_species(List sckm, IntegerVector const rxn_count)
 {
-  for (int r = 0; r < S.ncol(); r++)
+  SEXP X_ = sckm["X"], S_ = sckm["stoich"];
+  IntegerVector X(X_);
+  IntegerMatrix S(S_);
+  
+  Rcout << X << "\n" << S << rxn_count << "\n";
+  
+  for (int r = 0; r < rxn_count.length(); r++)
     X = X + S(_,r) * rxn_count[r];
- 
-  return X;
+  
+  Rcout << X << std::endl;
 }
-//
-//
-//
-//
-//// --------------------------------------------------------------------------------------
-//// Discrete time
-//// --------------------------------------------------------------------------------------
-//
-//
-///* Forward simulate ahead one time-step */
-//void tau_leap_one_step_R(int *nSpecies, int *nRxns, int *anPre, int *anPost, double *adlMult,
-//                  const double *adHazard,                 
-//                  int *nWhileMax,                          
-//                  int *anRxnCount, int *anX)
-//{
-//  Sckm *sckm = newSckm(*nSpecies, *nRxns, anPre, anPost, adlMult);
-//  tau_leap_one_step(sckm, adHazard, *nWhileMax, anRxnCount, anX);
-//  deleteSckm(sckm);
+
+
+
+
+// --------------------------------------------------------------------------------------
+// Discrete time
+// --------------------------------------------------------------------------------------
+
+//IntegerVector tau_leap_one_step(List sckm, NumericVector const hazard) {
+//  int nr = sckm["r"];
+//  
+//  // Simulate number of reactions
+//  IntegerVector number_of_reactions(nr);
+//  for (int r=0; r<nr; r++) 
+//    number_of_reactions[r] = rpois(1,hazard[r]);
+//    
+//  update_species
 //}
-//
+
+
 //int tau_leap_one_step(Sckm *sckm, 
 //                  const double *adHazard,                 
 //                  int nWhileMax,                          
@@ -106,20 +94,7 @@ IntegerVector update_species(IntegerMatrix const S, IntegerVector const rxn_coun
 //    }
 //  }
 //} 
-//
-//
-//
-//void tau_leap_R(int *nSpecies, int *nRxns, int *anPre, int *anPost, double *adlMult,
-//         const double *adTheta,
-//         const double *adTau, int *nSteps, 
-//         int *nWhileMax,
-//         int *anRxnCount, int *anX)
-//{
-//  Sckm *sckm = newSckm(*nSpecies, *nRxns, anPre, anPost, adlMult);
-//  tau_leap(sckm, adTheta, adTau, *nSteps, *nWhileMax, anRxnCount, anX);
-//  deleteSckm(sckm);
-//}
-//
+
 //int tau_leap(Sckm *sckm, const double *adTheta,
 //         const double *adTau, int nSteps, 
 //         int nWhileMax,
