@@ -19,8 +19,7 @@ LazyLoad: yes
 Depends:
     R (>= 3.2.3)
 Imports:
-    smcUtils,
-    stats
+    smcUtils
 Suggests:
     testthat
 Collate:
